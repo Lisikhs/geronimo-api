@@ -11,6 +11,14 @@ import java.util.Date;
 @Embeddable
 public class Profile {
 
+    public Profile(String status, Date dateOfBirth) {
+        this.status = status;
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public Profile() {
+    }
+
     private String status;
 
     @Lob
