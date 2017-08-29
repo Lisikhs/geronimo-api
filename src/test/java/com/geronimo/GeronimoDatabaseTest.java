@@ -5,6 +5,7 @@ import com.geronimo.dao.UserRepository;
 import com.geronimo.model.Message;
 import com.geronimo.model.Profile;
 import com.geronimo.model.User;
+import org.hibernate.Hibernate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,19 +63,13 @@ public class GeronimoDatabaseTest {
 
     @Test
     public void testRetrievingData() {
-        User firstUser = userRepository.findById(1L).get();
-        User secondUser = userRepository.findById(2L).get();
+        EntityManager entityManager = factory.createEntityManager();
+        User firstUser = (User) entityManager.createQuery("select u from User u WHERE u.id = 1").getSingleResult();
 
-        Message newMessage = new Message();
-        newMessage.setAuthor(secondUser);
-        newMessage.setText("super-new-message");
-        secondUser.addMessage(newMessage);
-        newMessage = messageRepository.save(newMessage);
+        Hibernate.initialize(firstUser.getMessages());
+        System.out.println(firstUser.getMessages());
 
-        Message message = firstUser.getMessages().get(0);
-        System.out.println(message);
-        message.addAnswer(newMessage);
-        messageRepository.save(message);
+        entityManager.close();
     }
 
 

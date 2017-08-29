@@ -1,9 +1,7 @@
 package com.geronimo.model;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -16,6 +14,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true, exclude = {"likes", "reblogs", "answers"})
 @Entity
 @Table(name = "messages")
+@ToString(exclude = {"author"})
 public class Message extends AuditedEntity {
 
     @NotNull
@@ -25,15 +24,18 @@ public class Message extends AuditedEntity {
     @NotNull
     private String text;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
+    @BatchSize(size = 20)
     @Setter(value = AccessLevel.NONE)
     private Set<User> likes = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
+    @BatchSize(size = 20)
     @Setter(value = AccessLevel.NONE)
     private Set<User> reblogs = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany
+    @BatchSize(size = 20)
     @Setter(value = AccessLevel.NONE)
     private List<Message> answers = new LinkedList<>();
 

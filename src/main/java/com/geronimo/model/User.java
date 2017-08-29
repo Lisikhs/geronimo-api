@@ -1,6 +1,7 @@
 package com.geronimo.model;
 
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -22,15 +23,18 @@ public class User extends AuditedEntity {
     @Embedded
     private Profile profile = new Profile();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL)
+    @BatchSize(size = 20)
     @Setter(AccessLevel.NONE)
     private List<Message> messages = new ArrayList<>();
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @BatchSize(size = 20)
     @Setter(AccessLevel.NONE)
     private Set<User> following = new HashSet<>();
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @BatchSize(size = 20)
     @Setter(AccessLevel.NONE)
     private Set<User> followers = new HashSet<>();
 
