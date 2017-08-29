@@ -28,7 +28,7 @@ public class GeronimoDatabaseTest {
 
 
     @Autowired
-    public void setFactory(EntityManagerFactory factory) {
+    public void setEntityManagerFactory(EntityManagerFactory factory) {
         this.factory = factory;
     }
 }

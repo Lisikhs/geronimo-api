@@ -14,7 +14,7 @@ import java.util.Date;
 @ToString
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-abstract class AuditedEntity {
+abstract class AuditedEntity extends AbstractEntity {
 
     @CreatedDate
     protected Date dateCreated;
@@ -22,6 +22,4 @@ abstract class AuditedEntity {
     @LastModifiedDate
     protected Date lastUpdated;
 
-    @javax.persistence.Version
-    protected Long version;
 }

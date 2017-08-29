@@ -10,7 +10,6 @@ import java.util.Date;
 @Data
 @Entity
 @ToString(callSuper = true)
-//@EntityListeners(AuditingEntityListener.class)
 public class Profile extends AuditedEntity {
 
     @Id
