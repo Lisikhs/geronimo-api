@@ -1,6 +1,7 @@
 package com.geronimo.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
@@ -9,12 +10,10 @@ import java.util.*;
 
 @Entity
 @Data
-@ToString(exclude = {"following", "messages", "followers"})
+@ToString(exclude = {"following", "messages", "followers"}, callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "users")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class User extends AuditedEntity {
 
     @NotNull
     private String username;
@@ -22,8 +21,7 @@ public class User {
     @NotNull
     private String password;
 
-    @OneToOne(cascade=CascadeType.ALL)
-    @NotNull
+    @Embedded
     private Profile profile = new Profile();
 
     @OneToMany(cascade = CascadeType.ALL)

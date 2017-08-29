@@ -2,19 +2,14 @@ package com.geronimo.model;
 
 
 import lombok.Data;
-import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Embeddable;
+import javax.persistence.Lob;
 import java.util.Date;
 
 @Data
-@Entity
-@ToString(callSuper = true)
-public class Profile extends AuditedEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+@Embeddable
+public class Profile {
 
     private String status;
 

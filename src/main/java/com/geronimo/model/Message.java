@@ -14,12 +14,12 @@ import java.util.Set;
 @Table(name = "messages")
 public class Message extends AuditedEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @NotNull
+    @ManyToOne
+    private User author;
 
     @NotNull
-    private Long userId;
+    private String text;
 
     @ManyToMany
     private Set<User> likes = new HashSet<>();

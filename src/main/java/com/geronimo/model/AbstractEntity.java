@@ -1,13 +1,17 @@
 package com.geronimo.model;
 
-import lombok.Setter;
+import lombok.Data;
 
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 
-@Setter
+@Data
 @MappedSuperclass
-public class AbstractEntity {
+public abstract class AbstractEntity {
 
-    @javax.persistence.Version
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    protected Long id;
+
+    @Version
     protected Long version;
 }

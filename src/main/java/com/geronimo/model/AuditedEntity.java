@@ -1,5 +1,7 @@
 package com.geronimo.model;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
@@ -10,8 +12,9 @@ import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.util.Date;
 
-@Setter
-@ToString
+@Data
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 abstract class AuditedEntity extends AbstractEntity {
