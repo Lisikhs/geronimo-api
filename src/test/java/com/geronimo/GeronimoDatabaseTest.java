@@ -1,6 +1,5 @@
 package com.geronimo;
 
-import com.geronimo.dao.UserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,21 +17,15 @@ import static org.junit.Assert.assertEquals;
 @SpringBootTest
 public class GeronimoDatabaseTest {
 
-    private UserRepository userRepository;
     private EntityManagerFactory factory;
 
     @Test
-    public void testDatabase() {
+    public void testDatabaseConnectionEstablished() {
         EntityManager entityManager = factory.createEntityManager();
         Query nativeQuery = entityManager.createNativeQuery("SELECT 1");
         assertEquals(nativeQuery.getSingleResult(), BigInteger.valueOf(1L));
     }
 
-
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Autowired
     public void setFactory(EntityManagerFactory factory) {

@@ -2,24 +2,26 @@ package com.geronimo.model;
 
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.SequenceGenerator;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Setter
 @ToString
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 abstract class AuditedEntity {
 
-    @NotNull
-    protected Date date_created;
+    @CreatedDate
+    protected Date dateCreated;
 
-    @NotNull
-    protected Date last_updated;
+    @LastModifiedDate
+    protected Date lastUpdated;
 
-    protected Long version = 1L;
+    @javax.persistence.Version
+    protected Long version;
 }

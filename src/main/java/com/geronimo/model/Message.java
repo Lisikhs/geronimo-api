@@ -1,20 +1,18 @@
 package com.geronimo.model;
 
 import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.annotation.Version;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
 @Table(name = "messages")
-@EntityListeners(AuditingEntityListener.class)
-public class Message {
+public class Message extends AuditedEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,16 +29,4 @@ public class Message {
 
     @OneToMany
     private List<Message> answers = new LinkedList<>();
-
-    @Column(name = "date_created")
-    @CreatedDate
-    protected Date dateCreated;
-
-    @Column(name = "last_updated")
-    @LastModifiedDate
-    protected Date lastUpdated;
-
-    @Column(name = "version")
-    @Version
-    protected Long version;
 }
