@@ -12,11 +12,8 @@ import java.util.*;
 @ToString(exclude = {"following", "messages", "followers"}, callSuper = true)
 @EqualsAndHashCode(callSuper = true, exclude = {"messages", "following", "followers"})
 @Table(name = "users")
+@NoArgsConstructor
 public class User extends AuditedEntity {
-
-    public User() {
-
-    }
 
     public User(String username, String password) {
         this.username = username;
@@ -54,7 +51,6 @@ public class User extends AuditedEntity {
 
     public void addMessage(Message message) {
         if (message != null) {
-            messages.add(message);
             messages.add(message);
         }
     }

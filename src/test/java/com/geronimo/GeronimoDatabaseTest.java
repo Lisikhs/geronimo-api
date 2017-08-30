@@ -10,13 +10,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+
 import java.math.BigInteger;
-import java.util.HashSet;
 
 import static org.junit.Assert.*;
 
@@ -24,52 +25,35 @@ import static org.junit.Assert.*;
 @SpringBootTest
 public class GeronimoDatabaseTest {
 
-    private EntityManagerFactory factory;
-    private MessageRepository messageRepository;
+    private EntityManager entityManager;
     private UserRepository userRepository;
-    private Logger logger = LoggerFactory.getLogger(GeronimoDatabaseTest.class);
 
+    @Transactional
     @Test
     public void testDatabaseConnectionEstablished() {
-        EntityManager entityManager = factory.createEntityManager();
         Query nativeQuery = entityManager.createNativeQuery("SELECT 1");
         assertEquals(nativeQuery.getSingleResult(), BigInteger.valueOf(1L));
     }
 
-
-    @Test
-    public void testRetrievingData() {
-        EntityManager entityManager = factory.createEntityManager();
-        User firstUser = (User) entityManager.createQuery("select u from User u WHERE u.id = 3").getSingleResult();
-
-        System.out.println(firstUser.getMessages());
-        entityManager.close();
-    }
-
     @Test
     @Transactional
-    public void testUser() {
+    public void testUserCouldBeStoredAndRetrieved() {
         User firstUser = new User("firstUsername", "firstPassword");
-        userRepository.save(firstUser);
+        firstUser = userRepository.save(firstUser);
 
-        firstUser = userRepository.findByUsername("firstUsername");
-        assertNotNull(firstUser.getId());
-        assertNotNull(firstUser.getUsername());
-        assertNotNull(firstUser.getPassword());
-        assertNotNull(firstUser.getProfile());
-        assertNull(firstUser.getProfile().getStatus());
-        assertEquals(firstUser.getFollowers(), new HashSet<>());
+        User retrievedUser = userRepository.findByUsername("firstUsername");
+        assertEquals(retrievedUser.getId(), firstUser.getId());
+        assertEquals(retrievedUser.getUsername(), firstUser.getUsername());
+        assertEquals(retrievedUser.getPassword(), firstUser.getPassword());
+        assertEquals(retrievedUser.getProfile(), firstUser.getProfile());
+        assertNotNull(retrievedUser.getDateCreated());
+        assertNotNull(retrievedUser.getLastUpdated());
+        assertEquals(retrievedUser.getVersion().longValue(), 0L);
     }
 
-
-    @Autowired
-    public void setEntityManagerFactory(EntityManagerFactory factory) {
-        this.factory = factory;
-    }
-
-    @Autowired
-    public void setMessageRepository(MessageRepository messageRepository) {
-        this.messageRepository = messageRepository;
+    @PersistenceContext
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 
     @Autowired
