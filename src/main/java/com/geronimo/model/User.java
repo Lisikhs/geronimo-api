@@ -25,17 +25,14 @@ public class User extends AuditedEntity {
 
     @OneToMany(cascade = CascadeType.ALL)
     @BatchSize(size = 20)
-    @Setter(AccessLevel.NONE)
     private List<Message> messages = new ArrayList<>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @BatchSize(size = 20)
-    @Setter(AccessLevel.NONE)
     private Set<User> following = new HashSet<>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @BatchSize(size = 20)
-    @Setter(AccessLevel.NONE)
     private Set<User> followers = new HashSet<>();
 
     private void addFollower(User follower) {
@@ -47,8 +44,9 @@ public class User extends AuditedEntity {
     }
 
     public void addMessage(Message message) {
-        if (message != null)
+        if (message != null) {
             messages.add(message);
+        }
     }
 
     public void follow(User toFollow) {

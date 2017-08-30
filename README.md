@@ -1,11 +1,4 @@
-# Doctor availability checker
-
-## How to use
-### Logging into Luxmed
-To login into Luxmed, you can send a request:  
-**POST /login?username=XXXXXX&password=XXXXXX**
-
-and you will get back an LXToken that could be used for further requests.
+# Geronimo messaging platform
 
 ## Next steps
 1. setup database with help of JPA + Hibernate (use sessionFactory, create entities)
