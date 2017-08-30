@@ -1,5 +1,4 @@
-CREATE DATABASE IF NOT EXISTS `geronimo`;
-USE `geronimo`;
+-- initial schema migration script for geronimo
 
 DROP TABLE IF EXISTS `messages`;
 CREATE TABLE `messages` (
