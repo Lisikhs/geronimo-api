@@ -26,17 +26,14 @@ public class Message extends AuditedEntity {
 
     @ManyToMany
     @BatchSize(size = 20)
-    @Setter(value = AccessLevel.NONE)
     private Set<User> likes = new HashSet<>();
 
     @ManyToMany
     @BatchSize(size = 20)
-    @Setter(value = AccessLevel.NONE)
     private Set<User> reblogs = new HashSet<>();
 
     @OneToMany
     @BatchSize(size = 20)
-    @Setter(value = AccessLevel.NONE)
     private List<Message> answers = new LinkedList<>();
 
     public void addLike(User whoLiked) {
@@ -62,6 +59,4 @@ public class Message extends AuditedEntity {
     public void removeAnswer(Message answer) {
         answers.remove(answer);
     }
-
-
 }
