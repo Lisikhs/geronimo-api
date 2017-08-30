@@ -17,6 +17,14 @@ import java.util.Set;
 @ToString(exclude = {"author"})
 public class Message extends AuditedEntity {
 
+    public Message() {
+    }
+
+    public Message(String text, User author) {
+        setAuthor(author);
+        this.text = text;
+    }
+
     @NotNull
     @ManyToOne
     private User author;
@@ -58,5 +66,10 @@ public class Message extends AuditedEntity {
 
     public void removeAnswer(Message answer) {
         answers.remove(answer);
+    }
+
+    public void setAuthor(User author) {
+        author.addMessage(this);
+        this.author = author;
     }
 }

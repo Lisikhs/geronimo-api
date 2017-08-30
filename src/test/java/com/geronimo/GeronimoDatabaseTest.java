@@ -2,23 +2,23 @@ package com.geronimo;
 
 import com.geronimo.dao.MessageRepository;
 import com.geronimo.dao.UserRepository;
-import com.geronimo.model.Message;
-import com.geronimo.model.Profile;
 import com.geronimo.model.User;
-import org.hibernate.Hibernate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import java.math.BigInteger;
-import java.util.Date;
+import java.util.HashSet;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -27,6 +27,7 @@ public class GeronimoDatabaseTest {
     private EntityManagerFactory factory;
     private MessageRepository messageRepository;
     private UserRepository userRepository;
+    private Logger logger = LoggerFactory.getLogger(GeronimoDatabaseTest.class);
 
     @Test
     public void testDatabaseConnectionEstablished() {
@@ -35,44 +36,30 @@ public class GeronimoDatabaseTest {
         assertEquals(nativeQuery.getSingleResult(), BigInteger.valueOf(1L));
     }
 
-    @Test
-    public void testMessageAndAuthor() {
-        User user = new User();
-        user.setUsername("username");
-        user.setPassword("password");
-        user.setProfile(new Profile("status", new Date()));
-        user = userRepository.save(user);  //INSERT
-
-        Message message = new Message();
-        message.setText("message");
-        message.setAuthor(user);
-        message = messageRepository.save(message); //INSERT
-
-        user.getMessages().add(message);
-        user = userRepository.save(user);//UPDATE
-
-        User anotherUser = new User();
-        anotherUser.setUsername("anotherUsername");
-        anotherUser.setPassword("anotherPassword");
-        anotherUser.setProfile(new Profile("new status", new Date()));
-        anotherUser = userRepository.save(anotherUser); //INSERT
-
-        user.follow(anotherUser);
-        user = userRepository.save(user);
-    }
 
     @Test
     public void testRetrievingData() {
         EntityManager entityManager = factory.createEntityManager();
-        User firstUser = (User) entityManager.createQuery("select u from User u WHERE u.id = 1").getSingleResult();
+        User firstUser = (User) entityManager.createQuery("select u from User u WHERE u.id = 3").getSingleResult();
 
-        Hibernate.initialize(firstUser.getMessages());
         System.out.println(firstUser.getMessages());
-
         entityManager.close();
     }
 
+    @Test
+    @Transactional
+    public void testUser() {
+        User firstUser = new User("firstUsername", "firstPassword");
+        userRepository.save(firstUser);
 
+        firstUser = userRepository.findByUsername("firstUsername");
+        assertNotNull(firstUser.getId());
+        assertNotNull(firstUser.getUsername());
+        assertNotNull(firstUser.getPassword());
+        assertNotNull(firstUser.getProfile());
+        assertNull(firstUser.getProfile().getStatus());
+        assertEquals(firstUser.getFollowers(), new HashSet<>());
+    }
 
 
     @Autowired

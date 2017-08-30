@@ -14,6 +14,15 @@ import java.util.*;
 @Table(name = "users")
 public class User extends AuditedEntity {
 
+    public User() {
+
+    }
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
     @NotNull
     private String username;
 
@@ -45,6 +54,7 @@ public class User extends AuditedEntity {
 
     public void addMessage(Message message) {
         if (message != null) {
+            messages.add(message);
             messages.add(message);
         }
     }
