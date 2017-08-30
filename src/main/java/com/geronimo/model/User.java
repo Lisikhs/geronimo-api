@@ -27,7 +27,7 @@ public class User extends AuditedEntity {
     private String password;
 
     @Embedded
-    private Profile profile = new Profile();
+    private Profile profile;
 
     @OneToMany(cascade = CascadeType.ALL)
     @BatchSize(size = 20)
