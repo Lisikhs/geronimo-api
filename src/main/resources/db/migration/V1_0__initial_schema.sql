@@ -46,10 +46,9 @@ CREATE TABLE `users` (
   `date_of_birth` datetime DEFAULT NULL,
   `picture` longblob,
   `status` varchar(255) DEFAULT NULL,
-  `username` varchar(255) NOT NULL UNIQUE,
+  `username` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-
 
 DROP TABLE IF EXISTS `users_followers`;
 CREATE TABLE `users_followers` (
