@@ -88,12 +88,7 @@ public class MessageServiceTest {
         // user replied to his own message (why not?)
         Message answerMessage = new Message("this butt sux!", author);
         answerMessage.setAuthor(author);
-        try {
-            messageService.answerMessage(originalMessage, answerMessage);
-        } catch (RuntimeException e) {
-            System.out.println("Original message: " + originalMessage.getId());
-            System.out.println("Answer message: " + answerMessage.getId());
-        }
+        messageService.answerMessage(originalMessage, answerMessage);
 
         Message answered = messageService.getMessageById(originalMessage.getId());
         Message answer = messageService.getMessageById(answerMessage.getId());
