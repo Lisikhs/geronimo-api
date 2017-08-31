@@ -93,6 +93,34 @@ public class MessageServiceTest {
 
     @Test
     @Transactional
+    public void testCountLikesServiceMethod() {
+        Message likeableMessage = new Message("I'm sexy and I know it", author);
+        messageService.postMessage(likeableMessage);
+
+        // again, why can't I just like my message? seriously?!
+        messageService.likeMessage(likeableMessage, author);
+
+        Long likesCount = messageService.countLikes(likeableMessage);
+        assertEquals(likesCount, Long.valueOf(likeableMessage.getLikes().size()));
+        assertEquals(likesCount.longValue(), 1L);
+    }
+
+    @Test
+    @Transactional
+    public void testCountReblogsServiceMethod() {
+        Message rebloggableMessage = new Message("I'm sexy and I know it", author);
+        messageService.postMessage(rebloggableMessage);
+
+        // again, why can't I just like my message? seriously?!
+        messageService.reblogMessage(rebloggableMessage, author);
+
+        Long reblogsCount = messageService.countReblogs(rebloggableMessage);
+        assertEquals(reblogsCount, Long.valueOf(rebloggableMessage.getReblogs().size()));
+        assertEquals(reblogsCount.longValue(), 1L);
+    }
+
+    @Test
+    @Transactional
     public void testAnswerMessageServiceMethod() {
         Message originalMessage = new Message("oh my gosh, look at her butt!", author);
         messageService.postMessage(originalMessage);

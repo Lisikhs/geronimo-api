@@ -14,6 +14,10 @@ public interface IMessageService {
 
     void likeMessage(Message message, User whoLiked);
 
+    Long countLikes(Message message);
+
+    Long countReblogs(Message message);
+
     void answerMessage(Message message, Message reply);
 
     Message getMessageById(Long id);

@@ -44,6 +44,16 @@ public class MessageService implements IMessageService {
         saveOrUpdateMessage(message);
     }
 
+    @Override
+    public Long countLikes(Message message) {
+        return messageRepository.countLikes(message.getId());
+    }
+
+    @Override
+    public Long countReblogs(Message message) {
+        return messageRepository.countReblogs(message.getId());
+    }
+
     @Transactional
     @Override
     public void answerMessage(Message message, Message reply) {
