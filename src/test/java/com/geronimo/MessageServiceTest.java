@@ -4,12 +4,15 @@ import com.geronimo.dao.UserRepository;
 import com.geronimo.model.Message;
 import com.geronimo.model.User;
 import com.geronimo.service.MessageService;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import static org.junit.Assert.*;
 
@@ -19,13 +22,47 @@ public class MessageServiceTest {
 
     private MessageService messageService;
     private UserRepository userRepository;
+    private EntityManager entityManager;
+
+    private User author;
+
+    @Transactional
+    @Before
+    public void before() {
+        userRepository.deleteByUsername("nice_user");
+        entityManager.flush();
+
+        author = userRepository.save(new User("nice_user", "nice_password"));
+    }
+
+    @Transactional
+    @After
+    public void after() {
+        userRepository.delete(author);
+        entityManager.flush();
+    }
 
     @Test
-    public void testMessageShouldBeStoredAndRetrieved() {
-        User user = userRepository.findByUsername("firstUsername");
+    @Transactional
+    public void testReblogMessageServiceMethod() {
+        Message message = new Message("hello, dudes", author);
+        messageService.postMessage(message);
 
-        Message message = new Message("firstUsername");
-        messageService.postMessage(message, user);
+        Message messageToReblog = messageService.getMessageById(message.getId());
+        messageService.reblogMessage(messageToReblog, author);
+
+        Message rebloggedMessage = messageService.getMessageById(messageToReblog.getId());
+        assertTrue(rebloggedMessage.getReblogs().contains(author));
+
+        messageService.deleteMessage(message.getId());
+        entityManager.flush();
+    }
+
+    @Transactional
+    @Test
+    public void testMessageShouldBeStoredAndRetrieved() {
+        Message message = new Message("some nice message", author);
+        messageService.postMessage(message);
 
         Message retrievedMessage = messageService.getMessageById(message.getId());
 
@@ -43,39 +80,37 @@ public class MessageServiceTest {
 
     @Test
     @Transactional
-    public void testReblogMessageServiceMethod() {
-        User user = userRepository.findByUsername("firstUsername");
-        Message messageToReblog = messageService.getMessageById(5L);
-
-        messageService.reblogMessage(messageToReblog, user);
-
-        Message rebloggedMessage = messageService.getMessageById(5L);
-        assertTrue(rebloggedMessage.getReblogs().contains(user));
-    }
-
-    @Test
-    @Transactional
     public void testAnswerMessageServiceMethod() {
-        User user = userRepository.findByUsername("firstUsername");
-        Message newMessage = new Message("this is an answer");
-        Message toBeAnswered = messageService.getMessageById(5L);
+        Message originalMessage = new Message("oh my gosh, look at her butt!", author);
+        originalMessage.setAuthor(author);
+        messageService.postMessage(originalMessage);
 
-        messageService.answerMessage(toBeAnswered, newMessage, user);
+        // user replied to his own message (why not?)
+        Message answerMessage = new Message("this butt sux!", author);
+        answerMessage.setAuthor(author);
+        try {
+            messageService.answerMessage(originalMessage, answerMessage);
+        } catch (RuntimeException e) {
+            System.out.println("Original message: " + originalMessage.getId());
+            System.out.println("Answer message: " + answerMessage.getId());
+        }
 
-        Message answer = messageService.getMessageById(newMessage.getId());
-        Message answered = messageService.getMessageById(5L);
+        Message answered = messageService.getMessageById(originalMessage.getId());
+        Message answer = messageService.getMessageById(answerMessage.getId());
 
         assertTrue(answered.getAnswers().contains(answer));
 
-        assertEquals(answer.getId(), newMessage.getId());
-        assertEquals(answer.getText(), newMessage.getText());
-        assertEquals(answer.getAuthor().getId(), newMessage.getAuthor().getId());
+        assertEquals(answer.getId(), answerMessage.getId());
+        assertEquals(answer.getText(), answerMessage.getText());
+        assertEquals(answer.getAuthor().getId(), answerMessage.getAuthor().getId());
 
         assertNotNull(answer.getDateCreated());
         assertNotNull(answer.getLastUpdated());
         assertEquals(answer.getVersion().longValue(), 0L);
 
         messageService.deleteMessage(answer.getId());
+        messageService.deleteMessage(originalMessage.getId());
+        entityManager.flush();
     }
 
     @Autowired
@@ -88,4 +123,8 @@ public class MessageServiceTest {
         this.userRepository = userRepository;
     }
 
+    @PersistenceContext
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 }

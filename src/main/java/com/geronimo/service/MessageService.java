@@ -3,52 +3,51 @@ package com.geronimo.service;
 import com.geronimo.dao.MessageRepository;
 import com.geronimo.model.Message;
 import com.geronimo.model.User;
+import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Repository
+
+@Service
 @Transactional(readOnly = true)
 public class MessageService implements IMessageService {
 
     private MessageRepository messageRepository;
 
-    @Override
     @Transactional
+    @Override
     public void saveOrUpdateMessage(Message message) {
         messageRepository.save(message);
     }
 
-    @Override
-    public void postMessage(Message message, User whoPosted) {
-        if (message != null && whoPosted != null) {
-            message.setAuthor(whoPosted);
-            saveOrUpdateMessage(message);
-
-            //TODO: Figure out how to save the message in user's list of messages
-
-        }
-    }
-
+    @Transactional
     @Override
     public void reblogMessage(Message messageToReblog, User whoReblogged) {
-        if (messageToReblog != null && whoReblogged != null) {
-            //TODO: Should reblogged message be stored in user's list of messages?
+        Validate.notNull(messageToReblog);
+        Validate.notNull(whoReblogged);
 
-            messageToReblog.addReblog(whoReblogged);
-            saveOrUpdateMessage(messageToReblog);
-        }
+        messageToReblog.addReblog(whoReblogged);
+        saveOrUpdateMessage(messageToReblog);
     }
 
+    @Transactional
     @Override
-    public void answerMessage(Message message, Message reply, User whoReplied) {
-        if (message != null && reply != null && whoReplied != null) {
-            reply.setAuthor(whoReplied);
-            saveOrUpdateMessage(reply);
+    public void postMessage(Message message) {
+        saveOrUpdateMessage(message);
+    }
 
-            message.addAnswer(reply);
-            saveOrUpdateMessage(message);
-        }
+    @Transactional
+    @Override
+    public void answerMessage(Message message, Message reply) {
+        Validate.notNull(message);
+        Validate.notNull(reply);
+
+        saveOrUpdateMessage(reply);
+
+        message.addAnswer(reply);
+        saveOrUpdateMessage(message);
     }
 
     @Override
@@ -56,6 +55,7 @@ public class MessageService implements IMessageService {
         return messageRepository.findOne(id);
     }
 
+    @Transactional
     @Override
     public void deleteMessage(Long id) {
         messageRepository.delete(id);

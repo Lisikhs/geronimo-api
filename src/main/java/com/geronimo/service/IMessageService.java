@@ -7,11 +7,11 @@ public interface IMessageService {
 
     void saveOrUpdateMessage(Message message);
 
-    void postMessage(Message message, User whoPosted);
+    void postMessage(Message message);
 
     void reblogMessage(Message messageToReblog, User whoReblogged);
 
-    void answerMessage(Message message, Message reply, User whoReplied);
+    void answerMessage(Message message, Message reply);
 
     Message getMessageById(Long id);
 

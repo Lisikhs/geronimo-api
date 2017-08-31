@@ -29,15 +29,22 @@ public class User extends AuditedEntity {
     @Embedded
     private Profile profile;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
     @BatchSize(size = 20)
     private List<Message> messages = new ArrayList<>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "followers_following",
+            joinColumns = {@JoinColumn(name = "follower_id")},
+            inverseJoinColumns = {@JoinColumn(name = "following_id")})
     @BatchSize(size = 20)
     private Set<User> following = new HashSet<>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+
+    @JoinTable(name = "followers_following",
+            joinColumns = {@JoinColumn(name = "following_id")},
+            inverseJoinColumns = {@JoinColumn(name = "follower_id")})
     @BatchSize(size = 20)
     private Set<User> followers = new HashSet<>();
 
