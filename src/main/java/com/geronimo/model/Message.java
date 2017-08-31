@@ -15,13 +15,10 @@ import java.util.Set;
 @Entity
 @Table(name = "messages")
 @ToString(exclude = {"author"})
+@NoArgsConstructor
 public class Message extends AuditedEntity {
 
-    public Message() {
-    }
-
-    public Message(String text, User author) {
-        setAuthor(author);
+    public Message(String text) {
         this.text = text;
     }
 
@@ -69,7 +66,6 @@ public class Message extends AuditedEntity {
     }
 
     public void setAuthor(User author) {
-        author.addMessage(this);
         this.author = author;
     }
 }
