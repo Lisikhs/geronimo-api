@@ -82,12 +82,10 @@ public class MessageServiceTest {
     @Transactional
     public void testAnswerMessageServiceMethod() {
         Message originalMessage = new Message("oh my gosh, look at her butt!", author);
-        originalMessage.setAuthor(author);
         messageService.postMessage(originalMessage);
 
         // user replied to his own message (why not?)
         Message answerMessage = new Message("this butt sux!", author);
-        answerMessage.setAuthor(author);
         messageService.answerMessage(originalMessage, answerMessage);
 
         Message answered = messageService.getMessageById(originalMessage.getId());
