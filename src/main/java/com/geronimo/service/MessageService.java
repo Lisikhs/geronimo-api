@@ -39,6 +39,13 @@ public class MessageService implements IMessageService {
 
     @Transactional
     @Override
+    public void likeMessage(Message message, User whoLiked) {
+        message.addLike(whoLiked);
+        saveOrUpdateMessage(message);
+    }
+
+    @Transactional
+    @Override
     public void answerMessage(Message message, Message reply) {
         Validate.notNull(message);
         Validate.notNull(reply);
@@ -58,6 +65,12 @@ public class MessageService implements IMessageService {
     @Override
     public void deleteMessage(Long id) {
         messageRepository.delete(id);
+    }
+
+    @Transactional
+    @Override
+    public void deleteMessage(Message message) {
+        messageRepository.delete(message);
     }
 
     @Autowired

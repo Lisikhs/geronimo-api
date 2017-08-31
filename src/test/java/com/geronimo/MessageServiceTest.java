@@ -58,6 +58,19 @@ public class MessageServiceTest {
         entityManager.flush();
     }
 
+    @Test
+    @Transactional
+    public void testLikeMessageServiceMethod() {
+        Message message = new Message("oh wow", author);
+        messageService.postMessage(message);
+
+        // yes, I like my own messages, why not? who doesn't do that?!
+        messageService.likeMessage(message, author);
+        assertTrue(message.getLikes().contains(author));
+
+        messageService.deleteMessage(message);
+    }
+
     @Transactional
     @Test
     public void testMessageShouldBeStoredAndRetrieved() {
