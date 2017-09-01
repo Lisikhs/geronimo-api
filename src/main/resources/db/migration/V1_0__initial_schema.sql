@@ -50,6 +50,7 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
+
 DROP TABLE IF EXISTS `users_followers`;
 CREATE TABLE `users_followers` (
   `user_id` bigint(20) NOT NULL,
