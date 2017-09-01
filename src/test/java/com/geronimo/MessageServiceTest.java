@@ -1,11 +1,12 @@
 package com.geronimo;
 
 import com.geronimo.dao.UserRepository;
-import com.geronimo.exceptions.RebloggingOwnMessageException;
 import com.geronimo.model.Message;
 import com.geronimo.model.User;
 import com.geronimo.service.MessageService;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,7 +46,7 @@ public class MessageServiceTest {
 
     @Test
     @Transactional
-    public void testReblogMessageServiceMethod() throws RebloggingOwnMessageException {
+    public void testReblogMessageServiceMethod() {
         Message message = new Message("hello, dudes", author);
         messageService.postMessage(message);
 
@@ -111,7 +112,7 @@ public class MessageServiceTest {
 
     @Test
     @Transactional
-    public void testCountReblogsServiceMethod() throws RebloggingOwnMessageException {
+    public void testCountReblogsServiceMethod() {
         Message rebloggableMessage = new Message("I'm sexy and I know it", author);
         messageService.postMessage(rebloggableMessage);
 

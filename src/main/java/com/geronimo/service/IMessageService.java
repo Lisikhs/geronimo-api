@@ -1,6 +1,5 @@
 package com.geronimo.service;
 
-import com.geronimo.exceptions.RebloggingOwnMessageException;
 import com.geronimo.model.Message;
 import com.geronimo.model.User;
 
@@ -10,7 +9,7 @@ public interface IMessageService {
 
     void postMessage(Message message);
 
-    void reblogMessage(Message messageToReblog, User whoReblogged) throws RebloggingOwnMessageException;
+    void reblogMessage(Message messageToReblog, User whoReblogged);
 
     void likeMessage(Message message, User whoLiked);
 

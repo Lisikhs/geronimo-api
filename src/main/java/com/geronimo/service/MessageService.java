@@ -26,11 +26,11 @@ public class MessageService implements IMessageService {
 
     @Transactional
     @Override
-    public void reblogMessage(Message messageToReblog, User whoReblogged) throws RebloggingOwnMessageException {
+    public void reblogMessage(Message messageToReblog, User whoReblogged) {
         Validate.notNull(messageToReblog);
         Validate.notNull(whoReblogged);
 
-        if(messageToReblog.getAuthor().equals(whoReblogged)) {
+        if (messageToReblog.getAuthor().equals(whoReblogged)) {
             throw new RebloggingOwnMessageException("User with username \'" +
                     whoReblogged.getUsername() + "\' tried to reblog his own messages");
         }
@@ -39,6 +39,7 @@ public class MessageService implements IMessageService {
         saveOrUpdateMessage(messageToReblog);
     }
 
+    @Transactional
     @Override
     public void postMessage(Message message) {
         Validate.notNull(message);

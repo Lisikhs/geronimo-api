@@ -33,7 +33,7 @@ public class User extends AuditedEntity {
     @BatchSize(size = 20)
     private List<Message> messages = new ArrayList<>();
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @ManyToMany
     @JoinTable(name = "followers_following",
             joinColumns = {@JoinColumn(name = "follower_id")},
             inverseJoinColumns = {@JoinColumn(name = "following_id")})

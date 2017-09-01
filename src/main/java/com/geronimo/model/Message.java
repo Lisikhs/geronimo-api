@@ -34,9 +34,7 @@ public class Message extends AuditedEntity {
     @BatchSize(size = 20)
     private Set<User> likes = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(schema = "message_reblogs", joinColumns = @JoinColumn(name = "message_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @ManyToMany
     @BatchSize(size = 20)
     private Set<User> reblogs = new HashSet<>();
 
