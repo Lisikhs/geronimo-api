@@ -33,7 +33,7 @@ public class MessageServiceTest {
     @Transactional
     @Before
     public void before() {
-        userService.deleteUser("nice_user");
+        userService.deleteUserByUsername("nice_user");
         entityManager.flush();
 
         author = userService.saveUser(new User("nice_user", "nice_password"));
@@ -69,7 +69,7 @@ public class MessageServiceTest {
         assertEquals(messages.getTotalElements(), 2L);
         assertEquals(messages.getContent().get(0).getDateCreated().compareTo(messages.getContent().get(1).getDateCreated()), 1);
 
-        userService.deleteUser(badUser.getId());
+        userService.deleteUserById(badUser.getId());
         messageService.deleteMessage(message1.getId());
         messageService.deleteMessage(message2.getId());
         entityManager.flush();

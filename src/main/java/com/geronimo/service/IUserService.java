@@ -1,6 +1,7 @@
 package com.geronimo.service;
 
 import com.geronimo.model.User;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,15 +13,15 @@ public interface IUserService {
 
     List<User> getFollowingUsers(Long id);
 
-    User getUser(String username);
+    User getUserByUsername(String username);
 
-    User getUser(Long id);
+    User getUserById(Long id);
 
     void deleteUser(User user);
 
-    void deleteUser(Long id);
+    void deleteUserById(Long id);
 
-    void deleteUser(String username);
+    void deleteUserByUsername(String username);
 
     User saveUser(User user);
 }

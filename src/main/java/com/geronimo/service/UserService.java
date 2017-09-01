@@ -47,14 +47,14 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User getUser(String username) {
+    public User getUserByUsername(String username) {
         Validate.notNull(username);
 
         return userRepository.findByUsername(username);
     }
 
     @Override
-    public User getUser(Long id) {
+    public User getUserById(Long id) {
         Validate.notNull(id);
 
         return userRepository.findOne(id);
@@ -70,7 +70,7 @@ public class UserService implements IUserService {
 
     @Transactional
     @Override
-    public void deleteUser(Long id) {
+    public void deleteUserById(Long id) {
         Validate.notNull(id);
 
         userRepository.delete(id);
@@ -78,7 +78,7 @@ public class UserService implements IUserService {
 
     @Transactional
     @Override
-    public void deleteUser(String username) {
+    public void deleteUserByUsername(String username) {
         Validate.notNull(username);
 
         userRepository.deleteByUsername(username);
