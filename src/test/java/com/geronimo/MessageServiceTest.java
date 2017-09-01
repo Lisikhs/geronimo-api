@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +42,31 @@ public class MessageServiceTest {
     @After
     public void after() {
         userRepository.delete(author);
+        entityManager.flush();
+    }
+
+    @Test
+    @Transactional
+    public void testListFeedMessagesServiceMethod() {
+        author.addFollower(author); //I'm following myself, why not?
+        userRepository.save(author);
+        entityManager.flush();
+
+        Message message1 = new Message("wow that's my first message!", author);
+        Message message2 = new Message("oh wow, here comes the second", author);
+
+        messageService.postMessage(message1);
+        messageService.postMessage(message2);
+        entityManager.flush();
+
+        Page<Message> messages = messageService.listFeedMessages(author, 0, 10);
+        System.out.println(messages.getContent());
+
+        assertEquals(messages.getTotalPages(), 1);
+        assertEquals(messages.getTotalElements(), 2L);
+
+        messageService.deleteMessage(message1.getId());
+        messageService.deleteMessage(message2.getId());
         entityManager.flush();
     }
 

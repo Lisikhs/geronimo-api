@@ -2,8 +2,11 @@ package com.geronimo.service;
 
 import com.geronimo.model.Message;
 import com.geronimo.model.User;
+import org.springframework.data.domain.Page;
 
 public interface IMessageService {
+
+    Page<Message> listFeedMessages(User sessionUser, int offset, int limit);
 
     void saveOrUpdateMessage(Message message);
 

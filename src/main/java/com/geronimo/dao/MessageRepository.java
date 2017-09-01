@@ -1,12 +1,17 @@
 package com.geronimo.dao;
 
 import com.geronimo.model.Message;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.geronimo.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 
-public interface MessageRepository extends JpaRepository<Message, Long> {
+
+public interface MessageRepository extends PagingAndSortingRepository<Message, Long> {
 
     Message findByText(String text);
 
@@ -15,4 +20,8 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
     @Query("select count(r) from Message m join m.reblogs r where m.id=:messageId")
     Long countReblogs(@Param("messageId") Long messageId);
+
+    Page<Message> findByAuthorInOrderByDateCreatedDesc(List<User> followingUsers, Pageable pageable);
+
+
 }
