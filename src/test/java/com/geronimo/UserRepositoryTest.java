@@ -47,11 +47,6 @@ public class UserRepositoryTest {
     @Transactional
     @Test
     public void testUserFollowingRelationship() {
-        userRepository.deleteByUsername("followed");
-        userRepository.deleteByUsername("follower1");
-        userRepository.deleteByUsername("follower2");
-        entityManager.flush();
-
         User followed = new User("followed", "ohmygosh");
         User follower1 = new User("follower1", "ohmygosh");
         User follower2 = new User("follower2", "ohmygosh");
@@ -62,7 +57,6 @@ public class UserRepositoryTest {
         followed.addFollower(follower1);
         followed.addFollower(follower2);
         userRepository.save(followed);
-
         entityManager.flush();
 
         User followedUpdated = userRepository.findByUsername("followed");
@@ -70,6 +64,11 @@ public class UserRepositoryTest {
 
         List<User> followedUsers = userRepository.getFollowingUsers(follower1.getId());
         assertTrue(followedUsers.contains(followed));
+
+        userRepository.deleteByUsername("followed");
+        userRepository.deleteByUsername("follower1");
+        userRepository.deleteByUsername("follower2");
+        entityManager.flush();
     }
 
     @Autowired

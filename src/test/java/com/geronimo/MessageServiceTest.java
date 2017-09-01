@@ -1,6 +1,7 @@
 package com.geronimo;
 
 import com.geronimo.dao.UserRepository;
+import com.geronimo.exceptions.RebloggingOwnMessageException;
 import com.geronimo.model.Message;
 import com.geronimo.model.User;
 import com.geronimo.service.MessageService;
@@ -44,7 +45,7 @@ public class MessageServiceTest {
 
     @Test
     @Transactional
-    public void testReblogMessageServiceMethod() {
+    public void testReblogMessageServiceMethod() throws RebloggingOwnMessageException {
         Message message = new Message("hello, dudes", author);
         messageService.postMessage(message);
 
@@ -103,11 +104,14 @@ public class MessageServiceTest {
         Long likesCount = messageService.countLikes(likeableMessage);
         assertEquals(likesCount, Long.valueOf(likeableMessage.getLikes().size()));
         assertEquals(likesCount.longValue(), 1L);
+
+        messageService.deleteMessage(likeableMessage);
+        entityManager.flush();
     }
 
     @Test
     @Transactional
-    public void testCountReblogsServiceMethod() {
+    public void testCountReblogsServiceMethod() throws RebloggingOwnMessageException {
         Message rebloggableMessage = new Message("I'm sexy and I know it", author);
         messageService.postMessage(rebloggableMessage);
 
@@ -117,6 +121,9 @@ public class MessageServiceTest {
         Long reblogsCount = messageService.countReblogs(rebloggableMessage);
         assertEquals(reblogsCount, Long.valueOf(rebloggableMessage.getReblogs().size()));
         assertEquals(reblogsCount.longValue(), 1L);
+
+        messageService.deleteMessage(rebloggableMessage);
+        entityManager.flush();
     }
 
     @Test
@@ -142,7 +149,7 @@ public class MessageServiceTest {
         assertNotNull(answer.getLastUpdated());
         assertEquals(answer.getVersion().longValue(), 0L);
 
-        messageService.deleteMessage(answer.getId());
+        messageService.deleteMessage(answer.getId()); //besauce of cascading may not be deleted manually
         messageService.deleteMessage(originalMessage.getId());
         entityManager.flush();
     }

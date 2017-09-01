@@ -1,8 +1,8 @@
 package com.geronimo.service;
 
+import com.geronimo.exceptions.RebloggingOwnMessageException;
 import com.geronimo.model.Message;
 import com.geronimo.model.User;
-import org.springframework.transaction.annotation.Transactional;
 
 public interface IMessageService {
 
@@ -10,7 +10,7 @@ public interface IMessageService {
 
     void postMessage(Message message);
 
-    void reblogMessage(Message messageToReblog, User whoReblogged);
+    void reblogMessage(Message messageToReblog, User whoReblogged) throws RebloggingOwnMessageException;
 
     void likeMessage(Message message, User whoLiked);
 
@@ -24,6 +24,5 @@ public interface IMessageService {
 
     void deleteMessage(Long id);
 
-    @Transactional
     void deleteMessage(Message message);
 }
