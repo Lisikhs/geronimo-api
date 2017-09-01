@@ -15,7 +15,13 @@ import java.util.Set;
 @Entity
 @Table(name = "messages")
 @ToString(exclude = {"author"})
+@NoArgsConstructor
 public class Message extends AuditedEntity {
+
+    public Message(String text, User author) {
+        this.text = text;
+        this.author = author;
+    }
 
     @NotNull
     @ManyToOne
@@ -32,7 +38,8 @@ public class Message extends AuditedEntity {
     @BatchSize(size = 20)
     private Set<User> reblogs = new HashSet<>();
 
-    @OneToMany
+    // why CascadeType.REMOVE? because we want to remove all the answers if the original message is removed
+    @OneToMany(cascade = {CascadeType.REMOVE})
     @BatchSize(size = 20)
     private List<Message> answers = new LinkedList<>();
 
@@ -58,5 +65,9 @@ public class Message extends AuditedEntity {
 
     public void removeAnswer(Message answer) {
         answers.remove(answer);
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
     }
 }
