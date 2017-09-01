@@ -7,9 +7,16 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 
 @RunWith(SpringRunner.class)
@@ -17,9 +24,9 @@ import static org.junit.Assert.assertNotNull;
 public class UserRepositoryTest {
 
     private UserRepository userRepository;
+    private EntityManager entityManager;
 
-    // TODO: figure out what can we do with SimpleJpaRepository transaction awareness
-    // TODO: changes are flushed before we try select a row that is not yet persisted
+    @Transactional
     @Test
     public void testUserCouldBeStoredAndRetrieved() {
         User firstUser = new User("firstUsername", "firstPassword");
@@ -34,6 +41,35 @@ public class UserRepositoryTest {
         assertEquals(retrievedUser.getVersion().longValue(), 0L);
 
         userRepository.delete(firstUser);
+        entityManager.flush();
+    }
+
+    @Transactional
+    @Test
+    public void testUserFollowingRelationship() {
+        userRepository.deleteByUsername("followed");
+        userRepository.deleteByUsername("follower1");
+        userRepository.deleteByUsername("follower2");
+        entityManager.flush();
+
+        User followed = new User("followed", "ohmygosh");
+        User follower1 = new User("follower1", "ohmygosh");
+        User follower2 = new User("follower2", "ohmygosh");
+        userRepository.save(followed);
+        userRepository.save(follower1);
+        userRepository.save(follower2);
+
+        followed.addFollower(follower1);
+        followed.addFollower(follower2);
+        userRepository.save(followed);
+
+        entityManager.flush();
+
+        User followedUpdated = userRepository.findByUsername("followed");
+        assertEquals(followedUpdated.getFollowers().size(), 2);
+
+        List<User> followedUsers = userRepository.getFollowingUsers(follower1.getId());
+        assertTrue(followedUsers.contains(followed));
     }
 
     @Autowired
@@ -41,4 +77,8 @@ public class UserRepositoryTest {
         this.userRepository = userRepository;
     }
 
+    @PersistenceContext
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 }
