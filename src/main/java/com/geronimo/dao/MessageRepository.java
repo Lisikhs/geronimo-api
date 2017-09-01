@@ -21,6 +21,7 @@ public interface MessageRepository extends PagingAndSortingRepository<Message, L
     @Query("select count(r) from Message m join m.reblogs r where m.id=:messageId")
     Long countReblogs(@Param("messageId") Long messageId);
 
+    // TODO: change this query as it might hit limit of SQL's IN function on following users
     Page<Message> findByAuthorInOrderByDateCreatedDesc(List<User> followingUsers, Pageable pageable);
 
 

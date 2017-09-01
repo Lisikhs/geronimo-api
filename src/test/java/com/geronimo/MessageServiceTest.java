@@ -1,9 +1,9 @@
 package com.geronimo;
 
-import com.geronimo.dao.UserRepository;
 import com.geronimo.model.Message;
 import com.geronimo.model.User;
-import com.geronimo.service.MessageService;
+import com.geronimo.service.IMessageService;
+import com.geronimo.service.IUserService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,8 +24,8 @@ import static org.junit.Assert.*;
 @SpringBootTest
 public class MessageServiceTest {
 
-    private MessageService messageService;
-    private UserRepository userRepository;
+    private IMessageService messageService;
+    private IUserService userService;
     private EntityManager entityManager;
 
     private User author;
@@ -32,39 +33,43 @@ public class MessageServiceTest {
     @Transactional
     @Before
     public void before() {
-        userRepository.deleteByUsername("nice_user");
+        userService.deleteUser("nice_user");
         entityManager.flush();
 
-        author = userRepository.save(new User("nice_user", "nice_password"));
+        author = userService.saveUser(new User("nice_user", "nice_password"));
     }
 
     @Transactional
     @After
     public void after() {
-        userRepository.delete(author);
+        userService.deleteUser(author);
         entityManager.flush();
     }
 
     @Test
     @Transactional
-    public void testListFeedMessagesServiceMethod() {
-        author.addFollower(author); //I'm following myself, why not?
-        userRepository.save(author);
+    public void testListFeedMessagesServiceMethod() throws InterruptedException {
+        User badUser = new User("not_nice_user", "neither_nice_password");
+        userService.saveUser(badUser);
+
+        userService.followUser(badUser, author);
         entityManager.flush();
 
         Message message1 = new Message("wow that's my first message!", author);
-        Message message2 = new Message("oh wow, here comes the second", author);
-
         messageService.postMessage(message1);
+        entityManager.flush();
+
+        Message message2 = new Message("oh wow, here comes the second", author);
         messageService.postMessage(message2);
         entityManager.flush();
 
-        Page<Message> messages = messageService.listFeedMessages(author, 0, 10);
-        System.out.println(messages.getContent());
+        Page<Message> messages = messageService.listFeedMessages(badUser, new PageRequest(0, 10));
 
         assertEquals(messages.getTotalPages(), 1);
         assertEquals(messages.getTotalElements(), 2L);
+        assertEquals(messages.getContent().get(0).getDateCreated().compareTo(messages.getContent().get(1).getDateCreated()), 1);
 
+        userService.deleteUser(badUser.getId());
         messageService.deleteMessage(message1.getId());
         messageService.deleteMessage(message2.getId());
         entityManager.flush();
@@ -182,13 +187,13 @@ public class MessageServiceTest {
     }
 
     @Autowired
-    public void setMessageService(MessageService messageService) {
+    public void setMessageService(IMessageService messageService) {
         this.messageService = messageService;
     }
 
     @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public void setUserService(IUserService userService) {
+        this.userService = userService;
     }
 
     @PersistenceContext

@@ -1,14 +1,13 @@
 package com.geronimo.service;
 
 import com.geronimo.dao.MessageRepository;
-import com.geronimo.dao.UserRepository;
 import com.geronimo.exceptions.RebloggingOwnMessageException;
 import com.geronimo.model.Message;
 import com.geronimo.model.User;
 import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,12 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class MessageService implements IMessageService {
 
     private MessageRepository messageRepository;
-    private UserRepository userRepository;
+    private IUserService userService;
 
     @Transactional
     @Override
-    public Page<Message> listFeedMessages(User sessionUser, int offset, int limit) {
-        return messageRepository.findByAuthorInOrderByDateCreatedDesc(userRepository.getFollowingUsers(sessionUser.getId()), new PageRequest(offset, limit));
+    public Page<Message> listFeedMessages(User sessionUser, Pageable pageable) {
+        return messageRepository.findByAuthorInOrderByDateCreatedDesc(userService.getFollowingUsers(sessionUser.getId()), pageable);
     }
 
     @Override
@@ -122,7 +121,7 @@ public class MessageService implements IMessageService {
     }
 
     @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public void setUserService(IUserService userService) {
+        this.userService = userService;
     }
 }
