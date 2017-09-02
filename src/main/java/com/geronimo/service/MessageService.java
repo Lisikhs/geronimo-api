@@ -21,8 +21,8 @@ public class MessageService implements IMessageService {
 
     @Transactional
     @Override
-    public Page<Message> listFeedMessages(User sessionUser, Pageable pageable) {
-        return messageRepository.findByAuthorInOrderByDateCreatedDesc(userService.getFollowingUsers(sessionUser.getId()), pageable);
+    public Page<Message> listFeedMessages(User currentUser, Pageable pageable) {
+        return messageRepository.findByAuthorIn(userService.getFollowingUsers(currentUser.getId()), pageable);
     }
 
     @Override

@@ -4,14 +4,14 @@ import com.geronimo.model.Message;
 import com.geronimo.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
 
-public interface MessageRepository extends PagingAndSortingRepository<Message, Long> {
+public interface MessageRepository extends JpaRepository<Message, Long> {
 
     Message findByText(String text);
 
@@ -22,7 +22,5 @@ public interface MessageRepository extends PagingAndSortingRepository<Message, L
     Long countReblogs(@Param("messageId") Long messageId);
 
     // TODO: change this query as it might hit limit of SQL's IN function on following users
-    Page<Message> findByAuthorInOrderByDateCreatedDesc(List<User> followingUsers, Pageable pageable);
-
-
+    Page<Message> findByAuthorIn(List<User> followingUsers, Pageable pageable);
 }

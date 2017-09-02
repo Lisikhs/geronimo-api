@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface IMessageService {
 
-    Page<Message> listFeedMessages(User sessionUser, Pageable pageable);
+    Page<Message> listFeedMessages(User currentUser, Pageable pageable);
 
     void saveOrUpdateMessage(Message message);
 
