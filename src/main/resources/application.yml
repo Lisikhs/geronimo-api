@@ -32,6 +32,7 @@ flyway:
 spring:
   profiles: travis-ci
 flyway:
-  url: jdbc:mysql://localhost:3306/geronimo_test?useUnicode=yes&amp;characterEncoding=UTF-8
-  password:
+  url: jdbc:mysql://127.0.0.1:3306/geronimo_test?useUnicode=yes&amp;characterEncoding=UTF-8
+  user: root
+  password: ~
 
