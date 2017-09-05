@@ -1,20 +1,26 @@
 package com.geronimo;
 
-import com.geronimo.dao.UserRepository;
 import com.geronimo.model.Message;
 import com.geronimo.model.User;
-import com.geronimo.service.MessageService;
+import com.geronimo.service.IMessageService;
+import com.geronimo.service.IUserService;
+import com.geronimo.util.DateUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -22,26 +28,59 @@ import static org.junit.Assert.*;
 @SpringBootTest
 public class MessageServiceTest {
 
-    private MessageService messageService;
-    private UserRepository userRepository;
+    private IMessageService messageService;
+    private IUserService userService;
     private EntityManager entityManager;
 
     private User author;
+    private User badUser;
 
     @Transactional
     @Before
     public void before() {
-        userRepository.deleteByUsername("nice_user");
+        userService.deleteUserByUsername("nice_user");
+        userService.deleteUserByUsername("not_nice_user");
         entityManager.flush();
 
-        author = userRepository.save(new User("nice_user", "nice_password"));
+        author = userService.saveUser(new User("nice_user", "nice_password"));
+        badUser = userService.saveUser(new User("not_nice_user", "neither_nice_password"));
     }
 
     @Transactional
     @After
     public void after() {
-        userRepository.delete(author);
+        userService.deleteUserById(badUser.getId());
+        userService.deleteUserById(author.getId());
         entityManager.flush();
+    }
+
+    @Test
+    @Transactional
+    public void testListFeedMessagesServiceMethod() throws InterruptedException {
+        userService.followUser(badUser, author);
+        entityManager.flush();
+
+        Message message1 = new Message("wow that's my first message!", author);
+        messageService.postMessage(message1);
+        entityManager.flush();
+
+        Message message2 = new Message("oh wow, here comes the second", author);
+        messageService.postMessage(message2);
+        entityManager.flush();
+
+        Page<Message> messages = messageService.listFeedMessages(badUser,
+                new PageRequest(0, 10,
+                new Sort(new Sort.Order(Sort.Direction.DESC, "dateCreated"))));
+
+        assertEquals(messages.getTotalPages(), 1);
+        assertEquals(messages.getTotalElements(), 2L);
+
+        List<Message> messagesFeed = messages.getContent();
+
+        long dateCreated1Millis = DateUtils.getLocalDateTimeMillis(messagesFeed.get(0).getDateCreated());
+        long dateCreated2Millis = DateUtils.getLocalDateTimeMillis(messagesFeed.get(1).getDateCreated());
+
+        assertTrue(dateCreated1Millis >= dateCreated2Millis);
     }
 
     @Test
@@ -156,13 +195,13 @@ public class MessageServiceTest {
     }
 
     @Autowired
-    public void setMessageService(MessageService messageService) {
+    public void setMessageService(IMessageService messageService) {
         this.messageService = messageService;
     }
 
     @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public void setUserService(IUserService userService) {
+        this.userService = userService;
     }
 
     @PersistenceContext

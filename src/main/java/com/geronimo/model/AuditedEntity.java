@@ -2,7 +2,6 @@ package com.geronimo.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -10,7 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @ToString(callSuper = true)
@@ -20,9 +19,9 @@ import java.util.Date;
 abstract class AuditedEntity extends AbstractEntity {
 
     @CreatedDate
-    protected Date dateCreated;
+    protected LocalDateTime dateCreated;
 
     @LastModifiedDate
-    protected Date lastUpdated;
+    protected LocalDateTime lastUpdated;
 
 }

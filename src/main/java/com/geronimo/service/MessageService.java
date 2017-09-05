@@ -1,11 +1,13 @@
 package com.geronimo.service;
 
 import com.geronimo.dao.MessageRepository;
-import com.geronimo.exceptions.RebloggingOwnMessageException;
+import com.geronimo.exception.RebloggingOwnMessageException;
 import com.geronimo.model.Message;
 import com.geronimo.model.User;
 import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class MessageService implements IMessageService {
 
     private MessageRepository messageRepository;
+    private IUserService userService;
+
+    @Transactional
+    @Override
+    public Page<Message> listFeedMessages(User currentUser, Pageable pageable) {
+        return messageRepository.findByAuthorIn(userService.getFollowingUsers(currentUser.getId()), pageable);
+    }
 
     @Override
     @Transactional
@@ -31,8 +40,8 @@ public class MessageService implements IMessageService {
         Validate.notNull(whoReblogged);
 
         if (messageToReblog.getAuthor().equals(whoReblogged)) {
-            throw new RebloggingOwnMessageException("User with username \'" +
-                    whoReblogged.getUsername() + "\' tried to reblog his own messages");
+            throw new RebloggingOwnMessageException("User with username '" +
+                    whoReblogged.getUsername() + "' tried to reblog his own messages");
         }
 
         messageToReblog.addReblog(whoReblogged);
@@ -43,6 +52,13 @@ public class MessageService implements IMessageService {
     @Override
     public void postMessage(Message message) {
         Validate.notNull(message);
+        Validate.notNull(message.getAuthor(), "Author should not be null!");
+
+        User author = message.getAuthor();
+
+        if (!author.getMessages().contains(message)) {
+            author.addMessage(message);
+        }
 
         saveOrUpdateMessage(message);
     }
@@ -77,7 +93,7 @@ public class MessageService implements IMessageService {
         Validate.notNull(message);
         Validate.notNull(reply);
 
-        saveOrUpdateMessage(reply);
+        postMessage(reply);
 
         message.addAnswer(reply);
         saveOrUpdateMessage(message);
@@ -109,5 +125,10 @@ public class MessageService implements IMessageService {
     @Autowired
     public void setMessageRepository(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
+    }
+
+    @Autowired
+    public void setUserService(IUserService userService) {
+        this.userService = userService;
     }
 }
