@@ -20,7 +20,6 @@ flyway:
 
 spring:
   profiles: test
-spring:
   datasource:
     url: jdbc:mysql://localhost:3306/geronimo_test?useUnicode=yes&amp;characterEncoding=UTF-8
 
