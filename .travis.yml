@@ -10,7 +10,7 @@ cache:
 
 before_script:
   - bash .travis/travis-install-mysql-5.7.sh
-  - mysql -e 'DROP DATABASE geronimo_test;'
+  - mysql -e 'DROP DATABASE IF EXISTS geronimo_test;'
   - mysql -e 'CREATE DATABASE geronimo_test;'
 
 script: ./mvnw test -B -Dmaven.javadoc.skip=true -Dspring.profiles.active=travis-ci
