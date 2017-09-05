@@ -7,4 +7,4 @@ sudo DEBIAN_FRONTEND=noninteractive dpkg -i mysql-apt-config_0.8.6-1_all.deb
 sudo apt-get update -q
 sudo apt-get install -q -y -o Dpkg::Options::=--force-confnew mysql-server
 sudo mysql_upgrade --force -u root
-sudo mysqlcheck -u root --auto-repair --all-databases --check-upgrade
+sudo service mysql restart
