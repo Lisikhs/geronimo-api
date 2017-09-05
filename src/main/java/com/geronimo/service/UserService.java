@@ -1,7 +1,7 @@
 package com.geronimo.service;
 
 import com.geronimo.dao.UserRepository;
-import com.geronimo.exceptions.FollowingOneselfException;
+import com.geronimo.exceptions.SelfFollowingException;
 import com.geronimo.model.User;
 import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +31,8 @@ public class UserService implements IUserService {
         Validate.notNull(following);
 
         if (follower.equals(following)) {
-            throw new FollowingOneselfException("User with username \'" +
-                    follower.getUsername() + "\' tried to follow himself");
+            throw new SelfFollowingException("User with username '" +
+                    follower.getUsername() + "' tried to follow himself");
         }
         following.addFollower(follower);
 

@@ -40,8 +40,8 @@ public class MessageService implements IMessageService {
         Validate.notNull(whoReblogged);
 
         if (messageToReblog.getAuthor().equals(whoReblogged)) {
-            throw new RebloggingOwnMessageException("User with username \'" +
-                    whoReblogged.getUsername() + "\' tried to reblog his own messages");
+            throw new RebloggingOwnMessageException("User with username '" +
+                    whoReblogged.getUsername() + "' tried to reblog his own messages");
         }
 
         messageToReblog.addReblog(whoReblogged);
@@ -52,11 +52,13 @@ public class MessageService implements IMessageService {
     @Override
     public void postMessage(Message message) {
         Validate.notNull(message);
+        Validate.notNull(message.getAuthor(), "Author should not be null!");
 
         User author = message.getAuthor();
 
-        if(!author.getMessages().contains(message))
+        if (!author.getMessages().contains(message)) {
             author.addMessage(message);
+        }
 
         saveOrUpdateMessage(message);
     }
@@ -90,7 +92,6 @@ public class MessageService implements IMessageService {
     public void answerMessage(Message message, Message reply) {
         Validate.notNull(message);
         Validate.notNull(reply);
-
 
         postMessage(reply);
 
