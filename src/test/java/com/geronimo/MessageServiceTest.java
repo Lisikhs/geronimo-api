@@ -33,7 +33,7 @@ public class MessageServiceTest {
     private EntityManager entityManager;
 
     private User author;
-    private User badUser;
+    private User otherUser;
 
     @Transactional
     @Before
@@ -43,13 +43,13 @@ public class MessageServiceTest {
         entityManager.flush();
 
         author = userService.saveOrUpdateUser(new User("nice_user", "nice_password"));
-        badUser = userService.saveOrUpdateUser(new User("not_nice_user", "neither_nice_password"));
+        otherUser = userService.saveOrUpdateUser(new User("not_nice_user", "neither_nice_password"));
     }
 
     @Transactional
     @After
     public void after() {
-        userService.deleteUserById(badUser.getId());
+        userService.deleteUserById(otherUser.getId());
         userService.deleteUserById(author.getId());
         entityManager.flush();
     }
@@ -57,7 +57,7 @@ public class MessageServiceTest {
     @Test
     @Transactional
     public void testListFeedMessagesServiceMethod() throws InterruptedException {
-        userService.followUser(badUser, author);
+        userService.followUser(otherUser, author);
         entityManager.flush();
 
         Message message1 = new Message("wow that's my first message!", author);
@@ -68,7 +68,7 @@ public class MessageServiceTest {
         messageService.postMessage(message2);
         entityManager.flush();
 
-        Page<Message> messages = messageService.listFeedMessages(badUser,
+        Page<Message> messages = messageService.listFeedMessages(otherUser,
                 new PageRequest(0, 10,
                 new Sort(new Sort.Order(Sort.Direction.DESC, "dateCreated"))));
 
@@ -90,10 +90,10 @@ public class MessageServiceTest {
         messageService.postMessage(message);
 
         Message messageToReblog = messageService.getMessageById(message.getId());
-        messageService.reblogMessage(messageToReblog, author);
+        messageService.reblogMessage(messageToReblog, otherUser);
 
         Message rebloggedMessage = messageService.getMessageById(messageToReblog.getId());
-        assertTrue(rebloggedMessage.getReblogs().contains(author));
+        assertTrue(rebloggedMessage.getReblogs().contains(otherUser));
 
         messageService.deleteMessage(message.getId());
         entityManager.flush();
@@ -156,7 +156,7 @@ public class MessageServiceTest {
         messageService.postMessage(rebloggableMessage);
 
         // again, why can't I just like my message? seriously?!
-        messageService.reblogMessage(rebloggableMessage, author);
+        messageService.reblogMessage(rebloggableMessage, otherUser);
 
         Long reblogsCount = messageService.countReblogs(rebloggableMessage);
         assertEquals(reblogsCount, Long.valueOf(rebloggableMessage.getReblogs().size()));
