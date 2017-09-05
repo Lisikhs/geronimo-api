@@ -3,7 +3,7 @@ jdk:
   - oraclejdk8
 services:
   - mysql
-sudo: required
+sudo: true
 cache:
   directories:
   - $HOME/.m2
