@@ -13,6 +13,6 @@ before_script:
   - mysql -e 'DROP DATABASE IF EXISTS geronimo_test;'
   - mysql -e 'CREATE DATABASE geronimo_test;'
 
-script: ./mvnw test -B -Dmaven.javadoc.skip=true -Dspring.profiles.active=travis-ci
+script: ./mvnw test -Dmaven.javadoc.skip=true -Dspring.profiles.active=travis-ci
 
 install: true
