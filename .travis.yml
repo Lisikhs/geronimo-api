@@ -1,12 +1,17 @@
 language: java
 jdk:
   - oraclejdk8
-script: ./mvnw test -B -Dmaven.javadoc.skip=true -Dspring.profiles.active=travis-ci
 services:
   - mysql
-before_install:
-  - mysql -e 'CREATE DATABASE IF NOT EXISTS geronimo_test;'
-install: true
+sudo: required
 cache:
   directories:
   - $HOME/.m2
+
+before_script:
+  - bash .travis/travis-install-mysql-5.7.sh
+script: ./mvnw test -B -Dmaven.javadoc.skip=true -Dspring.profiles.active=travis-ci
+
+before_install:
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS geronimo_test;'
+install: true
