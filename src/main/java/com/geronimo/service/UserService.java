@@ -84,14 +84,6 @@ public class UserService implements IUserService {
         userRepository.deleteByUsername(username);
     }
 
-    @Transactional
-    @Override
-    public User saveUser(User user) {
-        Validate.notNull(user);
-
-        return saveOrUpdateUser(user);
-    }
-
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;

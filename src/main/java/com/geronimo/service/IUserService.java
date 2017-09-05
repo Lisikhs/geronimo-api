@@ -22,6 +22,4 @@ public interface IUserService {
     void deleteUserById(Long id);
 
     void deleteUserByUsername(String username);
-
-    User saveUser(User user);
 }
