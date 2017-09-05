@@ -42,8 +42,8 @@ public class MessageServiceTest {
         userService.deleteUserByUsername("not_nice_user");
         entityManager.flush();
 
-        author = userService.saveUser(new User("nice_user", "nice_password"));
-        badUser = userService.saveUser(new User("not_nice_user", "neither_nice_password"));
+        author = userService.saveOrUpdateUser(new User("nice_user", "nice_password"));
+        badUser = userService.saveOrUpdateUser(new User("not_nice_user", "neither_nice_password"));
     }
 
     @Transactional
