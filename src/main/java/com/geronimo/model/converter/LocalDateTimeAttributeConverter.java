@@ -1,4 +1,4 @@
-package com.geronimo.model.converters;
+package com.geronimo.model.converter;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

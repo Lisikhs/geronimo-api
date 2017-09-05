@@ -1,6 +1,6 @@
 package com.geronimo.config;
 
-import com.geronimo.model.converters.LocalDateTimeAttributeConverter;
+import com.geronimo.model.converter.LocalDateTimeAttributeConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;

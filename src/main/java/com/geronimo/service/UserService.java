@@ -1,7 +1,7 @@
 package com.geronimo.service;
 
 import com.geronimo.dao.UserRepository;
-import com.geronimo.exceptions.SelfFollowingException;
+import com.geronimo.exception.SelfFollowingException;
 import com.geronimo.model.User;
 import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;

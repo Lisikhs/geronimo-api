@@ -1,7 +1,7 @@
 package com.geronimo.service;
 
 import com.geronimo.dao.MessageRepository;
-import com.geronimo.exceptions.RebloggingOwnMessageException;
+import com.geronimo.exception.RebloggingOwnMessageException;
 import com.geronimo.model.Message;
 import com.geronimo.model.User;
 import org.apache.commons.lang3.Validate;

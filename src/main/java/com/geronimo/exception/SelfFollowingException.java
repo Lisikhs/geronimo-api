@@ -1,4 +1,4 @@
-package com.geronimo.exceptions;
+package com.geronimo.exception;
 
 public class SelfFollowingException extends GeronimoException {
 
