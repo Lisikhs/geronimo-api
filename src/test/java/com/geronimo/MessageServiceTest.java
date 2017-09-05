@@ -33,19 +33,23 @@ public class MessageServiceTest {
     private EntityManager entityManager;
 
     private User author;
+    private User badUser;
 
     @Transactional
     @Before
     public void before() {
         userService.deleteUserByUsername("nice_user");
+        userService.deleteUserByUsername("not_nice_user");
         entityManager.flush();
 
         author = userService.saveUser(new User("nice_user", "nice_password"));
+        badUser = userService.saveUser(new User("not_nice_user", "neither_nice_password"));
     }
 
     @Transactional
     @After
     public void after() {
+        userService.deleteUserById(badUser.getId());
         userService.deleteUser(author);
         entityManager.flush();
     }
@@ -53,13 +57,6 @@ public class MessageServiceTest {
     @Test
     @Transactional
     public void testListFeedMessagesServiceMethod() throws InterruptedException {
-        // TODO: when test fails, user will not be deleted, you could move creation/deletion to before/after
-        userService.deleteUserByUsername("not_nice_user");
-        entityManager.flush();
-
-        User badUser = new User("not_nice_user", "neither_nice_password");
-        userService.saveUser(badUser);
-
         userService.followUser(badUser, author);
         entityManager.flush();
 
@@ -83,17 +80,7 @@ public class MessageServiceTest {
         long dateCreated1Millis = DateUtils.getLocalDateTimeMillis(messagesFeed.get(0).getDateCreated());
         long dateCreated2Millis = DateUtils.getLocalDateTimeMillis(messagesFeed.get(1).getDateCreated());
 
-        // TODO: figure out why sometimes the first item has a bigger amount of millis,
-        // TODO: is the sorting in query doesn't work?
-        // TODO: and remove println lines of code
-        System.out.println(dateCreated1Millis);
-        System.out.println(dateCreated2Millis);
         assertTrue(dateCreated1Millis >= dateCreated2Millis);
-
-        userService.deleteUserById(badUser.getId());
-        messageService.deleteMessage(message1.getId());
-        messageService.deleteMessage(message2.getId());
-        entityManager.flush();
     }
 
     @Test
