@@ -9,7 +9,7 @@ cache:
   - $HOME/.m2
 
 before_script:
-  - bash .travis/travis-install-mysql-5.7.sh
+#  - bash .travis/travis-install-mysql-5.7.sh
   - mysql -e 'DROP DATABASE IF EXISTS geronimo_test;'
   - mysql -e 'CREATE DATABASE geronimo_test;'
 
