@@ -21,7 +21,6 @@ public class Message extends AuditedEntity {
     public Message(String text, User author) {
         this.text = text;
         this.author = author;
-        author.addMessage(this);
     }
 
     @NotNull

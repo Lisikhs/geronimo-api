@@ -53,6 +53,11 @@ public class MessageService implements IMessageService {
     public void postMessage(Message message) {
         Validate.notNull(message);
 
+        User author = message.getAuthor();
+
+        if(!author.getMessages().contains(message))
+            author.addMessage(message);
+
         saveOrUpdateMessage(message);
     }
 
@@ -86,7 +91,8 @@ public class MessageService implements IMessageService {
         Validate.notNull(message);
         Validate.notNull(reply);
 
-        saveOrUpdateMessage(reply);
+
+        postMessage(reply);
 
         message.addAnswer(reply);
         saveOrUpdateMessage(message);

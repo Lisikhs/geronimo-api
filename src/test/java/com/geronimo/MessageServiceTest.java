@@ -50,7 +50,7 @@ public class MessageServiceTest {
     @After
     public void after() {
         userService.deleteUserById(badUser.getId());
-        userService.deleteUser(author);
+        userService.deleteUserById(author.getId());
         entityManager.flush();
     }
 
