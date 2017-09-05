@@ -7,3 +7,6 @@ services:
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS geronimo_test;'
 install: true
+cache:
+  directories:
+  - $HOME/.m2
