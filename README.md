@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Lisikhs/geronimo.svg?branch=develop)](https://travis-ci.org/Lisikhs/geronimo)
+
 # Geronimo messaging platform
 
 ## Next steps
