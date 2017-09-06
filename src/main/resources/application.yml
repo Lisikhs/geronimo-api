@@ -14,7 +14,7 @@ flyway:
   url: @db.url@
   user: @db.username@
   password: @db.password@
-  locations: db/migrations/
+  locations: classpath:db/migrations/
 
 ---
 
