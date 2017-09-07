@@ -96,6 +96,15 @@
 					<user>${db.username}</user>
 					<password>${db.password}</password>
 				</configuration>
+				<executions>
+					<execution>
+						<id>migrate</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>migrate</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
