@@ -68,6 +68,7 @@ public class MessageServiceTest {
         messageService.postMessage(message2);
         entityManager.flush();
 
+
         Page<Message> messages = messageService.listFeedMessages(otherUser,
                 new PageRequest(0, 10,
                 new Sort(new Sort.Order(Sort.Direction.DESC, "dateCreated"))));
