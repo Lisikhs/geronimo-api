@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -24,8 +23,9 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@GeronimoSpringTest
 public class MessageServiceTest {
 
     private IMessageService messageService;
