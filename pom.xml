@@ -148,5 +148,29 @@
 				<spring.profiles.active>travis-ci</spring.profiles.active>
 			</properties>
 		</profile>
+		<profile>
+			<id>test</id>
+			<properties>
+				<spring.profiles.active>test</spring.profiles.active>
+			</properties>
+			<build>
+				<plugins>
+					<!-- run flyway:migrate before test when we provide -P test profile to maven -->
+					<plugin>
+						<groupId>org.flywaydb</groupId>
+						<artifactId>flyway-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>migrate</id>
+								<phase>test-compile</phase>
+								<goals>
+									<goal>migrate</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 </project>
