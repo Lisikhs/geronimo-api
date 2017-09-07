@@ -35,6 +35,8 @@ public class Message extends AuditedEntity {
     private Set<User> likes = new HashSet<>();
 
     @ManyToMany
+    @JoinTable(joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "message_id"))
     @BatchSize(size = 20)
     private Set<User> reblogs = new HashSet<>();
 
