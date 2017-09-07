@@ -14,9 +14,9 @@ public class GeronimoApplication {
 	private static final Logger logger = LoggerFactory.getLogger(GeronimoApplication.class);
 
 	public static void main(String[] args) {
-		SpringApplication.run(GeronimoApplication.class, args);
-
 		printClasspath();
+
+		SpringApplication.run(GeronimoApplication.class, args);
 	}
 
 	public static void printClasspath() {
