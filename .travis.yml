@@ -13,4 +13,4 @@ before_script:
   - mysql -e 'DROP DATABASE IF EXISTS geronimo_test;'
   - mysql -e 'CREATE DATABASE geronimo_test;'
 
-script: ./mvnw clean package test -Dmaven.javadoc.skip=true -Dspring.profiles.active=travis-ci
+script: ./mvnw clean flyway:migrate package test -P travis-ci

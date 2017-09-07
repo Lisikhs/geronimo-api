@@ -1,6 +1,8 @@
 # pom.xml properties could be imported here, using special syntax @variable.name@
 
 spring:
+  # set active profile from maven properties (maybe there's a better way?)
+  profiles.active: @spring.profiles.active@
   datasource:
     url: @db.url@
     username: @db.username@
@@ -10,11 +12,6 @@ spring:
       ddl-auto: none
       use-new-id-generator-mappings: false
       show-sql: true
-flyway:
-  url: @db.url@
-  user: @db.username@
-  password: @db.password@
-  locations: classpath:db/migrations/
 
 ---
 
@@ -22,9 +19,6 @@ spring:
   profiles: test
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/geronimo_test?useUnicode=yes&amp;characterEncoding=UTF-8
-
-flyway:
-  url: jdbc:mysql://127.0.0.1:3306/geronimo_test?useUnicode=yes&amp;characterEncoding=UTF-8
 
 ---
 
@@ -34,8 +28,3 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/geronimo_test?useUnicode=yes&amp;characterEncoding=UTF-8
     username: root
     password: ~
-flyway:
-  url: jdbc:mysql://127.0.0.1:3306/geronimo_test?useUnicode=yes&amp;characterEncoding=UTF-8
-  user: root
-  password: ~
-

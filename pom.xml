@@ -25,9 +25,10 @@
 		<flyway.version>4.2.0</flyway.version>
 
 		<db.driver>com.mysql.jdbc.Driver</db.driver>
-		<db.url>jdbc:mysql://localhost:3306/geronimo?useUnicode=yes&amp;characterEncoding=UTF-8</db.url>
+		<db.url>jdbc:mysql://127.0.0.1:3306/geronimo?useUnicode=yes&amp;characterEncoding=UTF-8</db.url>
 		<db.username>root</db.username>
 		<db.password>5472</db.password>
+		<spring.active.profiles>default</spring.active.profiles>
 	</properties>
 
 	<dependencies>
@@ -48,12 +49,6 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-core</artifactId>
-			<version>${flyway.version}</version>
 		</dependency>
 
 		<dependency>
@@ -142,4 +137,16 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
+
+	<profiles>
+		<profile>
+			<id>travis-ci</id>
+			<properties>
+				<db.url>jdbc:mysql://127.0.0.1:3306/geronimo_test?useUnicode=yes&amp;characterEncoding=UTF-8</db.url>
+				<db.username>root</db.username>
+				<db.password>5472</db.password>
+				<spring.profiles.active>travis-ci</spring.profiles.active>
+			</properties>
+		</profile>
+	</profiles>
 </project>
