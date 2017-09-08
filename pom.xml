@@ -140,15 +140,6 @@
 
 	<profiles>
 		<profile>
-			<id>travis-ci</id>
-			<properties>
-				<db.url>jdbc:mysql://127.0.0.1:3306/geronimo_test?useUnicode=yes&amp;characterEncoding=UTF-8</db.url>
-				<db.username>root</db.username>
-				<db.password/>
-				<spring.profiles.active>travis-ci</spring.profiles.active>
-			</properties>
-		</profile>
-		<profile>
 			<id>test</id>
 			<properties>
 				<db.url>jdbc:mysql://127.0.0.1:3306/geronimo_test?useUnicode=yes&amp;characterEncoding=UTF-8</db.url>
