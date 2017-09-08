@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.1.RELEASE</version>
+		<version>1.5.6.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -25,9 +25,10 @@
 		<flyway.version>4.2.0</flyway.version>
 
 		<db.driver>com.mysql.jdbc.Driver</db.driver>
-		<db.url>jdbc:mysql://localhost:3306/geronimo?useUnicode=yes&amp;characterEncoding=UTF-8</db.url>
+		<db.url>jdbc:mysql://127.0.0.1:3306/geronimo?useUnicode=yes&amp;characterEncoding=UTF-8</db.url>
 		<db.username>root</db.username>
 		<db.password>5472</db.password>
+		<spring.active.profiles>default</spring.active.profiles>
 	</properties>
 
 	<dependencies>
@@ -48,12 +49,6 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-core</artifactId>
-			<version>${flyway.version}</version>
 		</dependency>
 
 		<dependency>
@@ -142,4 +137,34 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
+
+	<profiles>
+		<profile>
+			<id>test</id>
+			<properties>
+				<db.url>jdbc:mysql://127.0.0.1:3306/geronimo_test?useUnicode=yes&amp;characterEncoding=UTF-8</db.url>
+				<db.username>root</db.username>
+				<db.password>5472</db.password>
+				<spring.profiles.active>test</spring.profiles.active>
+			</properties>
+			<build>
+				<plugins>
+					<!-- run flyway:migrate before test when we provide -P test profile to maven -->
+					<plugin>
+						<groupId>org.flywaydb</groupId>
+						<artifactId>flyway-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>test-migrate</id>
+								<phase>test-compile</phase>
+								<goals>
+									<goal>migrate</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
