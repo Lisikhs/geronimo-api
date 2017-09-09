@@ -13,8 +13,6 @@ import java.util.List;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
 
-    Message findByText(String text);
-
     @Query("select count(l) from Message m join m.likes as l where m.id=:messageId")
     Long countLikes(@Param("messageId") Long messageId);
 
@@ -23,4 +21,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
     // TODO: change this query as it might hit limit of SQL's IN function on following users
     Page<Message> findByAuthorIn(List<User> followingUsers, Pageable pageable);
+
+    @Query("select m from Message m where m.author = :user or :user member of m.reblogs")
+    Page<Message> findUserMessages(@Param("user") User author, Pageable pageable);
 }

@@ -25,6 +25,14 @@ public class MessageService implements IMessageService {
         return messageRepository.findByAuthorIn(userService.getFollowingUsers(currentUser.getId()), pageable);
     }
 
+
+    @Transactional
+    @Override
+    public Page<Message> listUserMessagesAndReblogs(User author, Pageable pageable) {
+        return messageRepository.findUserMessages(author, pageable);
+    }
+
+
     @Override
     @Transactional
     public void saveOrUpdateMessage(Message message) {

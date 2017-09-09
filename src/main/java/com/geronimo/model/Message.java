@@ -14,7 +14,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true, exclude = {"likes", "reblogs", "answers"})
 @Entity
 @Table(name = "messages")
-@ToString(exclude = {"author"})
+@ToString(exclude = {"author", "reblogs"}, callSuper = true)
 @NoArgsConstructor
 public class Message extends AuditedEntity {
 
