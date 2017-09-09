@@ -28,7 +28,7 @@
 		<db.url>jdbc:mysql://127.0.0.1:3306/geronimo?useUnicode=yes&amp;characterEncoding=UTF-8</db.url>
 		<db.username>root</db.username>
 		<db.password>5472</db.password>
-		<spring.active.profiles>default</spring.active.profiles>
+		<spring.profiles.active>default</spring.profiles.active>
 	</properties>
 
 	<dependencies>
