@@ -32,5 +32,7 @@ ADD . /app
 # set working directory, all commands will be executed against /app folder
 WORKDIR /app
 
+EXPOSE 8080
+
 # Run spring-boot application
 CMD ["mvn", "clean", "flyway:migrate", "install", "spring-boot:run", "-DskipTests=true", "-Pdocker"]
