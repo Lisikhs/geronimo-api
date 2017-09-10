@@ -1,22 +1,37 @@
 version: '3'
+
 services:
-  mysql-server:
-    image: library/mysql:5.7
-    container_name: mysql-server
+  mysqldb:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
     environment:
       MYSQL_USER: root
       MYSQL_ROOT_PASSWORD: 5472
     ports:
       - "3307:3306"
-    volumes:
-      - "db-data:/var/lib/mysql"
-  geronimo-web-app:
+    networks:
+      - geronimo_network
+
+  webapp:
     build: .
     ports:
       - "8081:8080"
+    environment:
+      # these env variables are referenced in pom.xml
+      MYSQL_HOST: mysqldb:3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 5472
+      MYSQL_SCHEMA: geronimo
+      MYSQL_ROOT_PASSWORD: 5472
     depends_on:
-      - mysql-server
-    links:
-      - mysql-server
+      - mysqldb
+    networks:
+      - geronimo_network
+
 volumes:
-  db-data:
+  db_data:
+
+networks:
+  geronimo_network:
+    external: true
