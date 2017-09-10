@@ -22,12 +22,16 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<flyway.version>4.2.0</flyway.version>
+		<flyway.plugin.version>4.2.0</flyway.plugin.version>
 
 		<db.driver>com.mysql.jdbc.Driver</db.driver>
-		<db.url>jdbc:mysql://127.0.0.1:3306/geronimo?useUnicode=yes&amp;characterEncoding=UTF-8</db.url>
+		<db.url>jdbc:mysql://localhost:3306/geronimo?useUnicode=yes&amp;characterEncoding=UTF-8</db.url>
 		<db.username>root</db.username>
 		<db.password>5472</db.password>
+
+		<flyway.url>jdbc:mysql://localhost:3306?useUnicode=yes&amp;characterEncoding=UTF-8</flyway.url>
+		<flyway.schema>geronimo</flyway.schema>
+
 		<spring.profiles.active>default</spring.profiles.active>
 	</properties>
 
@@ -90,9 +94,10 @@
 			<plugin>
 				<groupId>org.flywaydb</groupId>
 				<artifactId>flyway-maven-plugin</artifactId>
-				<version>${flyway.version}</version>
+				<version>${flyway.plugin.version}</version>
 				<configuration>
-					<url>${db.url}</url>
+					<url>${flyway.url}</url>
+					<schemas>${flyway.schema}</schemas>
 					<user>${db.username}</user>
 					<password>${db.password}</password>
 				</configuration>
@@ -142,9 +147,12 @@
 		<profile>
 			<id>test</id>
 			<properties>
-				<db.url>jdbc:mysql://127.0.0.1:3306/geronimo_test?useUnicode=yes&amp;characterEncoding=UTF-8</db.url>
+				<db.url>jdbc:mysql://localhost:3306/geronimo_test?useUnicode=yes&amp;characterEncoding=UTF-8</db.url>
 				<db.username>root</db.username>
 				<db.password>5472</db.password>
+
+				<flyway.url>jdbc:mysql://localhost:3306?useUnicode=yes&amp;characterEncoding=UTF-8</flyway.url>
+				<flyway.schema>geronimo_test</flyway.schema>
 				<spring.profiles.active>test</spring.profiles.active>
 			</properties>
 			<build>
