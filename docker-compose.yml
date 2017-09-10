@@ -2,10 +2,14 @@ version: '3'
 services:
   mysql-server:
     image: library/mysql:5.7
+    container_name: mysql-server
     environment:
+      MYSQL_USER: root
       MYSQL_ROOT_PASSWORD: 5472
     ports:
       - "3307:3306"
+    volumes:
+      - "db-data:/var/lib/mysql"
   geronimo-web-app:
     build: .
     ports:
@@ -14,3 +18,5 @@ services:
       - mysql-server
     links:
       - mysql-server
+volumes:
+  db-data:

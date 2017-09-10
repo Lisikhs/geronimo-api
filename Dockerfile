@@ -32,8 +32,5 @@ ADD . /app
 # set working directory, all commands will be executed against /app folder
 WORKDIR /app
 
-# Build the application
-RUN mvn clean flyway:migrate install -Dskip.tests=true
-
-# Run the application
-CMD ["java", "-jar", "target/geronimo-0.0.1-SNAPSHOT.jar"]
+# Run spring-boot application
+CMD ["mvn", "clean", "flyway:migrate", "install", "spring-boot:run"]
