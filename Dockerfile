@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-RUN apt-get update
+RUN apt-get update && apt-get upgrade -y
 
 # Install Java 8
 RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
@@ -23,14 +23,8 @@ RUN cd /opt/ && wget http://www-eu.apache.org/dist/maven/maven-3/3.5.0/binaries/
 ENV M2_HOME /opt/maven
 ENV PATH $PATH:$M2_HOME/bin
 
-# Install mysql-server
-RUN echo "mysql-server-5.7 mysql-server/root_password password 5472" | debconf-set-selections && \
-  echo "mysql-server-5.7 mysql-server/root_password_again password 5472" | debconf-set-selections && \
-  apt-get update && \
-  apt-get install -y mysql-server-5.7
-
-# setup root user for mysql
-RUN service mysql start && mysql -uroot -p5472 -e 'CREATE DATABASE geronimo;'
+# Install mysql-client-5.7, perhaps we'll need it
+RUN apt-get update && apt-get install -y mysql-client-5.7
 
 # copy files from the project to the ubuntu docker image
 ADD . /app
@@ -41,5 +35,5 @@ WORKDIR /app
 # Build the application
 RUN mvn clean flyway:migrate install -Dskip.tests=true
 
-# Run the application jar file
+# Run the application
 CMD ["java", "-jar", "target/geronimo-0.0.1-SNAPSHOT.jar"]
