@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -56,7 +55,7 @@ public class MessageServiceTest {
 
     @Test
     @Transactional
-    public void testListFeedMessagesServiceMethod() throws InterruptedException {
+    public void testListFeedMessagesServiceMethod()  {
         userService.followUser(otherUser, author);
         entityManager.flush();
 
@@ -82,6 +81,46 @@ public class MessageServiceTest {
         long dateCreated2Millis = DateUtils.getLocalDateTimeMillis(messagesFeed.get(1).getDateCreated());
 
         assertTrue(dateCreated1Millis >= dateCreated2Millis);
+    }
+
+
+    @Test
+    @Transactional
+    public void testListUserMessagesAndReblogs() {
+        Message message1 = new Message("1", author);
+        messageService.postMessage(message1);
+
+        Message message2 = new Message("2", otherUser);
+        messageService.postMessage(message2);
+
+        Message message3 = new Message("3", author);
+        messageService.postMessage(message3);
+
+        Message message4 = new Message("4", otherUser);
+        messageService.postMessage(message4);
+
+        message2.addReblog(author);
+        message4.addReblog(author);
+
+        Page<Message> messages = messageService.listUserMessagesAndReblogs(author,
+                new PageRequest(0, 10,
+                        new Sort(new Sort.Order(Sort.Direction.DESC, "dateCreated"))));
+
+        assertEquals(messages.getTotalPages(), 1);
+        assertEquals(messages.getTotalElements(), 4L);
+
+
+        List<Message> messagesFeed = messages.getContent();
+
+        assertTrue(messagesFeed.contains(message1));
+        assertTrue(messagesFeed.contains(message2));
+        assertTrue(messagesFeed.contains(message3));
+        assertTrue(messagesFeed.contains(message4));
+
+        assertTrue(messagesFeed.get(0).equals(message4));
+        assertTrue(messagesFeed.get(1).equals(message3));
+        assertTrue(messagesFeed.get(2).equals(message2));
+        assertTrue(messagesFeed.get(3).equals(message1));
     }
 
     @Test
