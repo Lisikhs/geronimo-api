@@ -33,4 +33,4 @@ ADD . /app
 WORKDIR /app
 
 # Run spring-boot application
-CMD ["mvnw", "clean", "flyway:migrate", "install", "spring-boot:run", "-DskipTests=true", "-Pdocker"]
+CMD ["mvn", "clean", "flyway:migrate", "install", "spring-boot:run", "-DskipTests=true", "-Pdocker"]
