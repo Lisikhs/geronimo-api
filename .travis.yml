@@ -9,9 +9,8 @@ cache:
   - $HOME/.m2
 
 before_script:
-#  - bash .travis/travis-install-mysql-5.7.sh
   - echo "USE mysql;\nUPDATE user SET password=PASSWORD('5472') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
   - mysql -uroot -p5472 -e 'DROP DATABASE IF EXISTS geronimo_test;'
   - mysql -uroot -p5472 -e 'CREATE DATABASE geronimo_test;'
 
-script: ./mvnw clean flyway:migrate test -P test
+script: ./mvnw clean flyway:migrate test -Ptest
