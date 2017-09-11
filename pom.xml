@@ -106,7 +106,9 @@
                 <version>${flyway.plugin.version}</version>
                 <configuration>
                     <url>${flyway.url}</url>
-                    <schemas>${flyway.schema}</schemas>
+                    <schemas>
+                        <schema>${flyway.schema}</schema>
+                    </schemas>
                     <user>${db.username}</user>
                     <password>${db.password}</password>
                 </configuration>
