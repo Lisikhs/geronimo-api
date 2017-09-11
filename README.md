@@ -2,9 +2,25 @@
 
 # Geronimo messaging platform
 
-## Next steps
-1. setup database with help of JPA + Hibernate (use sessionFactory, create entities)
-2. cache Luxmed credentials into database and read them for security 
-(create initial database with hashed password and ship it with the project, and we'll also need to be able to unhash it to)
-3. Whatever.  
-4. implement search of available doctor sessions.
+## How to migrate the database
+To migrate the database please use the following command: \
+`mvnw flyway:migrate`
+
+This command will run scripts contained in `src/resources/db/migration` one by one
+and make will make your database up-to-date.
+
+## How to run the application
+Just execute a command: \
+`mvnw clean spring-boot:run`
+
+Please make sure you migrate your database before running the app, otherwise it might fail to start.
+To migrate the database and start the app, please use:
+
+`mvnw clean flyway:migrate spring-boot:run`
+
+## How to run tests
+To run tests please use the following command: \
+`mvnw clean test -Ptest`
+
+This command will implicitly run a command flyway:migrate with profile 'test', 
+so that the test database will be migrated before tests are run
