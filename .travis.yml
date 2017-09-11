@@ -14,4 +14,4 @@ before_script:
   - mysql -uroot -p5472 -e 'DROP DATABASE IF EXISTS geronimo_test;'
   - mysql -uroot -p5472 -e 'CREATE DATABASE geronimo_test;'
 
-script: ./mvnw clean flyway:migrate test -Ptest --debug
+script: ./mvnw clean flyway:migrate test -Ptest
