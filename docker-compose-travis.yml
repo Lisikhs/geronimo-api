@@ -13,7 +13,12 @@ services:
 
   webapp:
     build: .
-    command: mvn clean flyway:migrate test -Pdocker && mvn clean install
+    command:
+      - /bin/sh
+      - -c
+      - |
+          mvn clean flyway:migrate test -Pdocker
+          mvn clean install
     environment:
       # these env variables are referenced in pom.xml
       MYSQL_HOST: mysqldb:3306
