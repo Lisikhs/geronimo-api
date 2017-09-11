@@ -32,8 +32,8 @@ ADD . /app
 # set working directory, all commands will be executed against /app folder
 WORKDIR /app
 
+# tomcat will write to this directory
+VOLUME /tmp
+
 # expose 8080 port to the whole world
 EXPOSE 8080
-
-# Run spring-boot application
-CMD ["mvn", "clean", "flyway:migrate", "install", "spring-boot:run", "-DskipTests=true", "-Pdocker"]

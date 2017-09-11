@@ -8,22 +8,18 @@ services:
     environment:
       MYSQL_USER: root
       MYSQL_ROOT_PASSWORD: 5472
-    ports:
-      - "3307:3306"
     networks:
       - geronimo_network
 
   webapp:
     build: .
-    command: mvn clean flyway:migrate spring-boot:run -DskipTests=true -Pdocker
-    ports:
-      - "8081:8080"
+    command: mvn clean flyway:migrate test -Pdocker && mvn clean install
     environment:
       # these env variables are referenced in pom.xml
       MYSQL_HOST: mysqldb:3306
       MYSQL_USER: root
       MYSQL_PASSWORD: 5472
-      MYSQL_SCHEMA: geronimo
+      MYSQL_SCHEMA: geronimo_test
       MYSQL_ROOT_PASSWORD: 5472
     depends_on:
       - mysqldb
