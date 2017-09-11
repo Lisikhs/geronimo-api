@@ -11,6 +11,7 @@ before_install:
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
   - docker-compose --version
+  - docker network create geronimo_network
 
 install: echo "skipping install step"
 script: docker-compose -f docker-compose-travis.yml up --force-recreate --build
