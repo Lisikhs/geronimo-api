@@ -156,7 +156,7 @@
         <profile>
             <id>docker</id>
             <properties>
-                <db.url>jdbc:mysql://${env.MYSQL_HOST}/${env.MYSQL_SCHEMA}?useUnicode=yes&amp;characterEncoding=UTF-8</db.url>
+                <db.url>jdbc:mysql://${env.MYSQL_HOST}/${env.MYSQL_DATABASE}?useUnicode=yes&amp;characterEncoding=UTF-8</db.url>
                 <db.username>${env.MYSQL_USER}</db.username>
                 <db.password>${env.MYSQL_PASSWORD}</db.password>
             </properties>
