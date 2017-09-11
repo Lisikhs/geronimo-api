@@ -11,7 +11,10 @@ spring:
     hibernate:
       ddl-auto: none
       use-new-id-generator-mappings: false
-      show-sql: true
+    show-sql: true
+management:
+  security:
+    enabled: false
 
 ---
 
