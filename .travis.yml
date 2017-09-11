@@ -10,9 +10,9 @@ before_install:
   - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
   - sudo rm /usr/local/bin/docker-compose
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
+  - chmod +x /usr/local/bin/docker-compose
   - docker-compose --version
-  - docker-compose -f docker-compose-travis.yml up --force-recreate --build
+
 install: echo "skipping install step"
-script: echo "skipping script step"
+script: docker-compose -f docker-compose-travis.yml up --force-recreate --build
