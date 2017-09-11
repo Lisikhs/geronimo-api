@@ -23,12 +23,13 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <flyway.version>4.2.0</flyway.version>
+        <logging.file>logs/spring-boot-logging.log</logging.file>
 
         <db.driver>com.mysql.jdbc.Driver</db.driver>
         <db.url>jdbc:mysql://127.0.0.1:3306/geronimo?useUnicode=yes&amp;characterEncoding=UTF-8</db.url>
         <db.username>root</db.username>
         <db.password>5472</db.password>
-        <spring.active.profiles>default</spring.active.profiles>
+        <spring.profiles.active>default</spring.profiles.active>
     </properties>
 
     <dependencies>
