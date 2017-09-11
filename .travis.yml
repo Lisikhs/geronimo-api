@@ -18,7 +18,14 @@ before_install:
   - docker-compose --version
   # create network required to run docker-compose build
   - docker network create geronimo_network
-  - docker-compose -f ${DOCKER_COMPOSE_FILE} build
 
-install: echo "No installation step required."
-script: docker-compose -f ${DOCKER_COMPOSE_FILE} start
+# skip the install step
+install: true
+# build and start the containers, run tests, install jar, and stop the containers
+script:
+  - docker-compose -f ${DOCKER_COMPOSE_FILE} build
+  - docker-compose -f ${DOCKER_COMPOSE_FILE} up --timeout 1 --no-build -d
+  - docker-compose -f ${DOCKER_COMPOSE_FILE} run webapp "mvn clean flyway:migrate test -Pdocker"
+  - docker-compose -f ${DOCKER_COMPOSE_FILE} run webapp "mvn clean install"
+  - docker-compose -f ${DOCKER_COMPOSE_FILE} stop
+
