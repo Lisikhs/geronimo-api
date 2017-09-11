@@ -4,14 +4,19 @@ services:
 env:
   - DOCKER_COMPOSE_VERSION=1.16.1
 before_install:
+  # update and install newest docker
   - sudo apt-get update
   - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+  # remove old docker-compose and download the newest docker-compose
   - sudo rm /usr/local/bin/docker-compose
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  # make docker-compose executable and move to a dir mapped into $PATH
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
+  # check version of docker-compose (will be visible in travis-ci log)
   - docker-compose --version
+  # create network required to run docker-compose build
   - docker network create geronimo_network
 
-install: echo "skipping install step"
+install: echo "No installation step required."
 script: docker-compose -f docker-compose-travis.yml up --force-recreate --build
