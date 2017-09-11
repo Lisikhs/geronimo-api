@@ -3,7 +3,6 @@ services:
   - docker
 env:
   - DOCKER_COMPOSE_VERSION=1.16.1
-  - DOCKER_COMPOSE_FILE=docker-compose-travis.yml
 before_install:
   # update and install newest docker
   - sudo apt-get update
@@ -23,9 +22,9 @@ before_install:
 install: true
 # build and start the containers, run tests, install jar, and stop the containers
 script:
-  - docker-compose -f ${DOCKER_COMPOSE_FILE} build
-  - docker-compose -f ${DOCKER_COMPOSE_FILE} up --timeout 1 --no-build -d
-  - docker-compose -f ${DOCKER_COMPOSE_FILE} run webapp "mvn clean flyway:migrate test -Pdocker"
-  - docker-compose -f ${DOCKER_COMPOSE_FILE} run webapp "mvn clean install"
-  - docker-compose -f ${DOCKER_COMPOSE_FILE} stop
+  - docker-compose -f docker-compose-travis.yml build
+  - docker-compose -f docker-compose-travis.yml up --timeout 1 --no-build -d
+  - docker-compose -f docker-compose-travis.yml run webapp "mvn clean flyway:migrate test -Pdocker"
+  - docker-compose -f docker-compose-travis.yml run webapp "mvn clean install"
+  - docker-compose -f docker-compose-travis.yml stop
 
