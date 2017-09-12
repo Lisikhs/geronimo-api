@@ -31,6 +31,9 @@
         <db.username>root</db.username>
         <db.password>5472</db.password>
         <spring.profiles.active>default</spring.profiles.active>
+
+        <logging.file>${project.name}</logging.file>
+        <logging.path>logs/</logging.path>
     </properties>
 
     <dependencies>
@@ -72,6 +75,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
         </dependency>
 
         <dependency>
