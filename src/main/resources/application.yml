@@ -8,10 +8,15 @@ spring:
     username: @db.username@
     password: @db.password@
   jpa:
+    show-sql: true
     hibernate:
       ddl-auto: none
       use-new-id-generator-mappings: false
-      show-sql: true
+  thymeleaf:
+    cache: true
+    suffix: .html
+    prefix: classpath:/templates/
+    mode: HTML
 
 ---
 
