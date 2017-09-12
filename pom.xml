@@ -29,6 +29,9 @@
         <db.username>root</db.username>
         <db.password>5472</db.password>
         <spring.profiles.active>default</spring.profiles.active>
+
+        <logging.file>${project.name}.log</logging.file>
+        <logging.path>logs/</logging.path>
     </properties>
 
     <dependencies>

@@ -25,4 +25,6 @@ spring:
 ---
 
 logging:
-  file: logs
+  file: @logging.file@
+  path: @logging.path@
+  config: classpath:logbackx.groovy
