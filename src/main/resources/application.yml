@@ -21,3 +21,8 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/geronimo_test?useUnicode=yes&amp;characterEncoding=UTF-8
     username: root
     password: 5472
+
+---
+
+logging:
+  file: logs
