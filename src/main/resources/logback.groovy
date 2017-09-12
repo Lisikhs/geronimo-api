@@ -5,7 +5,7 @@ def LOG_ARCHIVE = "${LOG_PATH}/archive" as Object
 
 
 appender("RollingFile-Appender", RollingFileAppender) {
-    file = "${LOG_PATH}/spring-boot-logging.log"
+    file = "${LOG_PATH}/geronimo.log"
 
     rollingPolicy(TimeBasedRollingPolicy) {
         fileNamePattern = "${LOG_ARCHIVE}/rollingfile.log%d{yyyy-MM-dd}.log"
