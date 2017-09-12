@@ -16,10 +16,10 @@ appender("CONSOLE", ConsoleAppender) {
 }
 
 appender("FILE", RollingFileAppender) {
-    file = "${LOG_PATH}/${LOG_FILE}"
+    file = "${LOG_PATH}/${LOG_FILE}.log"
 
     rollingPolicy(TimeBasedRollingPolicy) {
-        fileNamePattern = "${LOG_ARCHIVE}/rollingfile.log%d{yyyy-MM-dd}.log"
+        fileNamePattern = "${LOG_ARCHIVE}/${LOG_FILE}-%d{yyyy-MM-dd}.log"
         maxHistory = 30
         totalSizeCap = FileSize.valueOf("10MB")
     }
