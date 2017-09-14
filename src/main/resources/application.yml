@@ -17,19 +17,14 @@ spring:
     suffix: .html
     prefix: classpath:/templates/
     mode: HTML
-
----
-
-spring:
-  profiles: test
-  datasource:
-    url: jdbc:mysql://127.0.0.1:3306/geronimo_test?useUnicode=yes&amp;characterEncoding=UTF-8
-    username: root
-    password: 5472
-
----
-
+management:
+  security:
+    enabled: false
 logging:
   file: @logging.file@
   path: @logging.path@
   config: classpath:logbackx.groovy
+---
+
+spring:
+  profiles: test

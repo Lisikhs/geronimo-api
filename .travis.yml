@@ -1,17 +1,31 @@
 language: java
-jdk:
-  - oraclejdk8
+sudo: required
 services:
-  - mysql
-sudo: true
-cache:
-  directories:
-  - $HOME/.m2
+  - docker
+env:
+  - DOCKER_COMPOSE_VERSION=1.16.1
+before_install:
+  # update and install newest docker
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+  # remove old docker-compose and download the newest docker-compose
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  # make docker-compose executable and move to a dir mapped into $PATH
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+  # check version of docker-compose (will be visible in travis-ci log)
+  - docker-compose --version
+  # create network required to run docker-compose build
+  - docker network create geronimo_network
 
-before_script:
-#  - bash .travis/travis-install-mysql-5.7.sh
-  - echo "USE mysql;\nUPDATE user SET password=PASSWORD('5472') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
-  - mysql -uroot -p5472 -e 'DROP DATABASE IF EXISTS geronimo_test;'
-  - mysql -uroot -p5472 -e 'CREATE DATABASE geronimo_test;'
+# skip the install step
+install: true
+# build and start the containers, run tests, install jar, and stop the containers
+script:
+  - docker-compose -f docker-compose-travis.yml build
+  - docker-compose -f docker-compose-travis.yml up --timeout 1 --no-build -d
+  - docker-compose -f docker-compose-travis.yml run webapp mvn clean flyway:migrate test -Pdocker
+  - docker-compose -f docker-compose-travis.yml run webapp mvn clean install -DskipTests=true
+  - docker-compose -f docker-compose-travis.yml stop
 
-script: ./mvnw clean flyway:migrate test -Ptest --debug

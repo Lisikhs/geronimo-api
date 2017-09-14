@@ -1,0 +1,39 @@
+version: '3.3'
+
+services:
+  mysqldb:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: geronimo
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: 5472
+    ports:
+      - "3307:3306"
+    networks:
+      - geronimo_network
+
+  webapp:
+    build: .
+    command: mvn clean flyway:migrate spring-boot:run -DskipTests=true -Pdocker
+    ports:
+      - "8081:8080"
+    environment:
+      # these env variables are referenced in pom.xml
+      MYSQL_HOST: mysqldb:3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 5472
+      MYSQL_DATABASE: geronimo
+      MYSQL_ROOT_PASSWORD: 5472
+    depends_on:
+      - mysqldb
+    networks:
+      - geronimo_network
+
+volumes:
+  db_data:
+
+networks:
+  geronimo_network:
+    external: true
