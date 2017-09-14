@@ -1,11 +1,8 @@
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
-import ch.qos.logback.core.ConsoleAppender
-import ch.qos.logback.core.rolling.RollingFileAppender
-import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
 import ch.qos.logback.core.util.FileSize
 
-def LOG_PATH = System.getProperty("LOG_PATH")
-def LOG_FILE = System.getProperty("LOG_FILE")
+def LOG_PATH = System.getProperty("LOG_PATH") ?: 'logs/'
+def LOG_FILE = System.getProperty("LOG_FILE") ?: 'geronimo'
 def LOG_ARCHIVE = "${LOG_PATH}/archive"
 
 

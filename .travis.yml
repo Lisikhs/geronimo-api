@@ -4,6 +4,18 @@ services:
   - docker
 env:
   - DOCKER_COMPOSE_VERSION=1.16.1
+
+cache:
+  bundler: true
+  directories:
+    - $HOME/.docker
+
+before_cache:
+  # Save tagged docker images
+  - >
+    mkdir -p $HOME/.docker && docker images -a --filter='dangling=false' --format '{{.Repository}}:{{.Tag}} {{.ID}}'
+    | xargs -n 2 -t sh -c 'test -e $HOME/.docker/$1.tar.gz || docker save $0 | gzip -2 > $HOME/.docker/$1.tar.gz'
+
 before_install:
   # update and install newest docker
   - sudo apt-get update
@@ -18,6 +30,8 @@ before_install:
   - docker-compose --version
   # create network required to run docker-compose build
   - docker network create geronimo_network
+  # load cached docker images
+  - if [[ -d $HOME/.docker ]]; then ls $HOME/.docker/*.tar.gz | xargs -I {file} sh -c "zcat {file} | docker load"; fi
 
 # skip the install step
 install: true
