@@ -23,7 +23,7 @@ management:
 logging:
   file: @logging.file@
   path: @logging.path@
-  config: classpath:logbackx.groovy
+  config: classpath:logback.groovy
 ---
 
 spring:
