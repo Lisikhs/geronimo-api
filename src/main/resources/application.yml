@@ -17,13 +17,17 @@ spring:
     suffix: .html
     prefix: classpath:/templates/
     mode: HTML
+
 management:
   security:
     enabled: false
+
+
 logging:
   file: @logging.file@
   path: @logging.path@
-  config: classpath:logbackx.groovy
+  config: classpath:logback-spring.groovy
+
 ---
 
 spring:
