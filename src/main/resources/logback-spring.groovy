@@ -4,10 +4,13 @@ import ch.qos.logback.core.rolling.RollingFileAppender
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
 import ch.qos.logback.core.util.FileSize
 
-def LOG_PATH = System.getProperty("LOG_PATH")
-def LOG_FILE = System.getProperty("LOG_FILE")
-def LOG_ARCHIVE = "${LOG_PATH}/archive"
+def logPath = System.getProperty("LOG_PATH")
+def logFile = System.getProperty("LOG_FILE")
+def logArchive = "${logPath}/archive"
 
+if (!logPath || !logFile) {
+    throw new IllegalStateException("Logging is not configured: make sure LOG_PATH and LOG_FILE properties are set")
+}
 
 appender("CONSOLE", ConsoleAppender) {
     encoder(PatternLayoutEncoder) {
@@ -16,10 +19,10 @@ appender("CONSOLE", ConsoleAppender) {
 }
 
 appender("FILE", RollingFileAppender) {
-    file = "${LOG_PATH}/${LOG_FILE}.log"
+    file = "${logPath}/${logFile}.log"
 
     rollingPolicy(TimeBasedRollingPolicy) {
-        fileNamePattern = "${LOG_ARCHIVE}/${LOG_FILE}-%d{yyyy-MM-dd}.log"
+        fileNamePattern = "${logArchive}/${logFile}-%d{yyyy-MM-dd}.log"
         maxHistory = 30
         totalSizeCap = FileSize.valueOf("10MB")
     }
