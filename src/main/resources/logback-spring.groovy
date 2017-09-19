@@ -12,8 +12,6 @@ if (!logPath || !logFile) {
     throw new IllegalStateException("Logging is not configured: make sure LOG_PATH and LOG_FILE properties are set")
 }
 
-println "Log_path: " + logPath
-
 appender("CONSOLE", ConsoleAppender) {
     encoder(PatternLayoutEncoder) {
         pattern = "%d{HH:mm:ss} %-4relative [%thread] %-5level %logger{35} - %msg%n"
