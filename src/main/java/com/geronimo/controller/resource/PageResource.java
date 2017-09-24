@@ -23,65 +23,48 @@ public class PageResource<T> extends ResourceSupport implements Page<T> {
 
     private final Page<T> page;
 
-    public PageResource(Page<T> page, String pageParam,
-                        String sizeParam) {
-        super();
-        this.page = page;
-        addPreviousLink(page, pageParam, sizeParam);
-        addNextLink(page, pageParam, sizeParam);
-        addFirstLink(page, pageParam, sizeParam);
-        addLastLink(page, pageParam, sizeParam);
-        addSelfLink(page, pageParam, sizeParam);
-    }
-
     public PageResource(Page<T> page) {
         super();
         this.page = page;
-        addPreviousLink(page, PAGE_PARAM, SIZE_PARAM);
-        addNextLink(page, PAGE_PARAM, SIZE_PARAM);
-        addFirstLink(page, PAGE_PARAM, SIZE_PARAM);
-        addLastLink(page, PAGE_PARAM, SIZE_PARAM);
-        addSelfLink(page, PAGE_PARAM, SIZE_PARAM);
+        addPreviousLink();
+        addNextLink();
+        addFirstLink();
+        addLastLink();
+        addSelfLink();
     }
 
-    private void addPreviousLink(Page<T> page, String pageParam,
-                                 String sizeParam) {
+    private void addPreviousLink() {
         if (page.hasPrevious()) {
-            Link link = buildPageLink(pageParam, page.getNumber() - 1, sizeParam, page.getSize(), Link.REL_PREVIOUS);
-            add(link);
+            add(buildPageLink(page.getNumber() - 1, page.getSize(), Link.REL_PREVIOUS));
         }
     }
 
-    private void addNextLink(Page<T> page, String pageParam, String sizeParam) {
+    private void addNextLink() {
         if (page.hasNext()) {
-            Link link = buildPageLink(pageParam, page.getNumber() - 1, sizeParam, page.getSize(), Link.REL_NEXT);
-            add(link);
+            add(buildPageLink(page.getNumber() - 1, page.getSize(), Link.REL_NEXT));
         }
     }
 
-    private void addFirstLink(Page<T> page, String pageParam, String sizeParam) {
+    private void addFirstLink() {
         if (page.getNumber() != 0) {
-            Link link = buildPageLink(pageParam, 0, sizeParam, page.getSize(), Link.REL_FIRST);
-            add(link);
+            add(buildPageLink(0, page.getSize(), Link.REL_FIRST));
         }
     }
 
-    private void addLastLink(Page<T> page, String pageParam, String sizeParam) {
+    private void addLastLink() {
         if (page.getTotalPages() != 0 && page.getNumber() != page.getTotalPages() - 1) {
-            Link link = buildPageLink(pageParam, page.getTotalPages() - 1, sizeParam, page.getSize(), Link.REL_LAST);
-            add(link);
+            add(buildPageLink(page.getTotalPages() - 1, page.getSize(), Link.REL_LAST));
         }
     }
 
-    private void addSelfLink(Page<T> page, String pageParam, String sizeParam) {
-        Link link = buildPageLink(pageParam, page.getNumber(), sizeParam, page.getSize(), Link.REL_SELF);
-        add(link);
+    private void addSelfLink() {
+        add(buildPageLink(page.getNumber(), page.getSize(), Link.REL_SELF));
     }
 
-    private Link buildPageLink(String pageParam, int page, String sizeParam, int size, String rel) {
+    private Link buildPageLink(int page, int size, String rel) {
         String path = createBuilder()
-                .queryParam(pageParam, page)
-                .queryParam(sizeParam, size)
+                .queryParam(PAGE_PARAM, page)
+                .queryParam(SIZE_PARAM, size)
                 .build()
                 .toUriString();
         return new Link(path, rel);
