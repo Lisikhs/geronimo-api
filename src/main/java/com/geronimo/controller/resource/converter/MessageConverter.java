@@ -6,12 +6,12 @@ import com.geronimo.controller.resource.MessageResource;
 import com.geronimo.model.Message;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 
 
+// TODO: use ResourceAssemblerSupport?
 @Component
 public class MessageConverter implements ResourceConverter<Message, MessageResource> {
 
@@ -23,7 +23,7 @@ public class MessageConverter implements ResourceConverter<Message, MessageResou
 
         resource.add(linkTo(MessageController.class, entity.getAuthor().getId())
                 .slash(entity.getId())
-                .withRel(Link.REL_SELF));
+                .withSelfRel());
 
         return resource;
     }

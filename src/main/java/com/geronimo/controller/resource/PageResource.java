@@ -1,14 +1,18 @@
 package com.geronimo.controller.resource;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.NoArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,14 +20,16 @@ import java.util.List;
 /**
  * A resource class for rendering HATEOAS information about page of results
  */
+@XmlRootElement(name = "page")
+@NoArgsConstructor
 public class PageResource<T> extends ResourceSupport implements Page<T> {
 
     private static final String PAGE_PARAM = "page";
     private static final String SIZE_PARAM = "size";
 
-    private final Page<T> page;
+    private PageImpl<T> page;
 
-    public PageResource(Page<T> page) {
+    public PageResource(PageImpl<T> page) {
         super();
         this.page = page;
         addPreviousLink();
@@ -31,6 +37,14 @@ public class PageResource<T> extends ResourceSupport implements Page<T> {
         addFirstLink();
         addLastLink();
         addSelfLink();
+    }
+
+    public PageImpl<T> getPage() {
+        return page;
+    }
+
+    public void setPage(PageImpl<T> page) {
+        this.page = page;
     }
 
     private void addPreviousLink() {
@@ -74,21 +88,25 @@ public class PageResource<T> extends ResourceSupport implements Page<T> {
         return ServletUriComponentsBuilder.fromCurrentRequestUri();
     }
 
+    @XmlElement
     @Override
     public int getNumber() {
         return page.getNumber();
     }
 
+    @XmlElement
     @Override
     public int getSize() {
         return page.getSize();
     }
 
+    @XmlElement
     @Override
     public int getNumberOfElements() {
         return page.getNumberOfElements();
     }
 
+    @XmlElement
     @Override
     public List<T> getContent() {
         return page.getContent();
@@ -99,6 +117,7 @@ public class PageResource<T> extends ResourceSupport implements Page<T> {
         return page.hasContent();
     }
 
+    @XmlElement
     @Override
     public Sort getSort() {
         return page.getSort();
@@ -116,30 +135,37 @@ public class PageResource<T> extends ResourceSupport implements Page<T> {
         return page.isLast();
     }
 
+    @JsonIgnore
     @Override
     public boolean hasNext() {
         return page.hasNext();
     }
 
+    @JsonIgnore
     @Override
     public boolean hasPrevious() {
         return page.hasPrevious();
     }
 
+    @JsonIgnore
     @Override
     public Pageable nextPageable() {
         return page.nextPageable();
     }
 
+    @JsonIgnore
+    @Override
     public Pageable previousPageable() {
         return page.previousPageable();
     }
 
+    @XmlElement
     @Override
     public int getTotalPages() {
         return page.getTotalPages();
     }
 
+    @XmlElement
     @Override
     public long getTotalElements() {
         return page.getTotalElements();
