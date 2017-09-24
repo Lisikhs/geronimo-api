@@ -2,8 +2,10 @@ package com.geronimo.controller.resource;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.springframework.hateoas.ResourceSupport;
 
+@JsonPropertyOrder({"id"})
 public abstract class AbstractResource extends ResourceSupport {
 
     @JsonProperty("id")

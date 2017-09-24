@@ -2,12 +2,15 @@ package com.geronimo.controller;
 
 import com.geronimo.controller.resource.MessageResource;
 import com.geronimo.controller.resource.PageResource;
+import com.geronimo.controller.resource.converter.MessageConverter;
 import com.geronimo.model.Message;
 import com.geronimo.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -19,10 +22,13 @@ import java.util.stream.Collectors;
 @RequestMapping("/user/{userId}/message")
 public class MessageController extends AbstractMessageController {
 
+    @Autowired
+    private MessageConverter messageConverter;
+
     @PostMapping
     public void postMessage(@PathVariable("userId") Long userId, @RequestBody MessageResource messageDto,
                                            HttpServletResponse response) {
-        Message message = convertToEntity(messageDto);
+        Message message = messageConverter.convert(messageDto);
 
         User author = getUserService().getUserById(userId);
         message.setAuthor(author);
@@ -30,6 +36,18 @@ public class MessageController extends AbstractMessageController {
         getMessageService().postMessage(message);
 
         response.setStatus(HttpStatus.CREATED.value());
+    }
+
+    @GetMapping("/{messageId}")
+    public ResponseEntity<MessageResource> getMessage(@PathVariable("messageId") Long messageId) {
+        Message message = getMessageService().getMessageById(messageId);
+
+        if (message == null) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+
+        MessageResource messageResource = messageConverter.convert(message);
+        return new ResponseEntity<>(messageResource, HttpStatus.OK);
     }
 
     @GetMapping
@@ -42,7 +60,7 @@ public class MessageController extends AbstractMessageController {
 
         // convert to renderable object
         List<MessageResource> messageDtoList = messages.getContent().stream()
-                .map(this::convertToDto)
+                .map(messageConverter::convert)
                 .collect(Collectors.toList());
 
         // create a renderable page

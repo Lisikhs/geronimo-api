@@ -2,8 +2,10 @@ package com.geronimo.controller;
 
 import com.geronimo.controller.resource.MessageResource;
 import com.geronimo.controller.resource.PageResource;
+import com.geronimo.controller.resource.converter.MessageConverter;
 import com.geronimo.model.Message;
 import com.geronimo.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/user/{userId}/feed")
 public class MessageFeedController extends AbstractMessageController {
 
+    @Autowired
+    private MessageConverter messageConverter;
+
     @GetMapping
     public PageResource<MessageResource> listFeedMessages(@PathVariable("userId") Long userId, Pageable pageable) {
         // get the user
@@ -31,7 +36,7 @@ public class MessageFeedController extends AbstractMessageController {
         // TODO: can we somehow generalize this?
         // convert to renderable object
         List<MessageResource> messageDtoList = feedMessages.getContent().stream()
-                .map(this::convertToDto)
+                .map(messageConverter::convert)
                 .collect(Collectors.toList());
 
         // create a renderable page
