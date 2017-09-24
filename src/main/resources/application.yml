@@ -17,6 +17,10 @@ spring:
     suffix: .html
     prefix: classpath:/templates/
     mode: HTML
+  jackson:
+    serialization:
+      # added for better LocalDateTime JSON serialization support
+      write_dates_as_timestamps: false
 
 management:
   security:

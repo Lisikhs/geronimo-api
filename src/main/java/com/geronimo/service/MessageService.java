@@ -21,14 +21,18 @@ public class MessageService implements IMessageService {
 
     @Transactional
     @Override
-    public Page<Message> listFeedMessages(User currentUser, Pageable pageable) {
-        return messageRepository.findByAuthorIn(userService.getFollowingUsers(currentUser.getId()), pageable);
+    public Page<Message> listFeedMessages(User user, Pageable pageable) {
+        Validate.notNull(user);
+
+        return messageRepository.findByAuthorIn(userService.getFollowingUsers(user.getId()), pageable);
     }
 
 
     @Transactional
     @Override
     public Page<Message> listUserMessagesAndReblogs(User author, Pageable pageable) {
+        Validate.notNull(author);
+
         return messageRepository.findUserMessages(author, pageable);
     }
 
