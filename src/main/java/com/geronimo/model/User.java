@@ -1,5 +1,6 @@
 package com.geronimo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
 
@@ -13,6 +14,7 @@ import java.util.*;
 @EqualsAndHashCode(callSuper = true, exclude = {"messages", "followers"})
 @Table(name = "users")
 @NoArgsConstructor
+@JsonIgnoreProperties(value = { "messages" })
 public class User extends AuditedEntity {
 
     public User(String username, String password) {
@@ -46,9 +48,9 @@ public class User extends AuditedEntity {
         }
     }
 
-    public void addFollower(User toFollow) {
-        if (toFollow != null) {
-            followers.add(toFollow);
+    public void addFollower(User follower) {
+        if (follower != null) {
+            followers.add(follower);
         }
     }
 
@@ -57,4 +59,6 @@ public class User extends AuditedEntity {
             followers.remove(toUnfollow);
         }
     }
+
+
 }

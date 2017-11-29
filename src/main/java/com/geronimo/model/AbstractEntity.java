@@ -1,10 +1,14 @@
 package com.geronimo.model;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Data
+@Setter
+@Getter
 @MappedSuperclass
 public abstract class AbstractEntity {
 
