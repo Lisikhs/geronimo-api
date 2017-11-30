@@ -9,13 +9,13 @@ import java.util.Set;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = true, exclude = {"permissions", "users"})
-@Table(name = "role")
+@Table(name = "roles")
 public class Role extends AuditedEntity {
 
     private String name;
 
     @ManyToMany
-    @JoinTable(name = "role_permission", joinColumns = @JoinColumn(name = "role_id"),
+    @JoinTable(name = "roles_permissions", joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id"))
     private Set<Permission> permissions;
 

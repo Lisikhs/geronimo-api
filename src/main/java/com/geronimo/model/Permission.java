@@ -11,7 +11,7 @@ import java.util.Set;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = true, exclude = {"roles", "users"})
-@Table(name = "permission")
+@Table(name = "permissions")
 public class Permission extends AuditedEntity {
 
     private String name;

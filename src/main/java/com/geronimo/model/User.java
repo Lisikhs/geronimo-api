@@ -33,12 +33,12 @@ public class User extends AuditedEntity {
     private String password;
 
     @ManyToMany
-    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
     @ManyToMany
-    @JoinTable(name = "user_permission", joinColumns = @JoinColumn(name = "user_id"),
+    @JoinTable(name = "users_permissions", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id"))
     private Set<Permission> permissions;
 
