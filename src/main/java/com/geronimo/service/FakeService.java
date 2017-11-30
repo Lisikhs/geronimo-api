@@ -221,7 +221,8 @@ public class FakeService {
 
     public Message answerMessage(Long answeredId, Message message) {
         Message finalMessage = message;
-        User author = users.stream().filter(u -> u.getUsername().equals(finalMessage.getAuthor().getUsername())).findFirst().orElse(null);
+        User author = users.stream()
+                .filter(u -> u.getUsername().equals(finalMessage.getAuthor().getUsername())).findFirst().orElse(null);
         message = buildMessage(message.getText(), author);
 
         author.addMessage(message);
