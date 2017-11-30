@@ -15,9 +15,9 @@ RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true 
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 
 # Install Maven 3.5.0
-RUN cd /opt/ && wget http://www-eu.apache.org/dist/maven/maven-3/3.5.0/binaries/apache-maven-3.5.0-bin.tar.gz && \
-  tar -xvzf apache-maven-3.5.0-bin.tar.gz && \
-  mv apache-maven-3.5.0 maven
+RUN cd /opt/ && wget http://ftp.ps.pl/pub/apache/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.tar.gz && \
+  tar -xvzf apache-maven-3.5.2-bin.tar.gz && \
+  mv apache-maven-3.5.2 maven
 
 # Set M2_HOME env variable, and put it into PATH, so that mvn is available anywhere
 ENV M2_HOME /opt/maven
