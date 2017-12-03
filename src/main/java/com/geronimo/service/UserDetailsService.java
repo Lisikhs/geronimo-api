@@ -27,25 +27,23 @@ public class UserDetailsService implements org.springframework.security.core.use
     @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        LOG.info("UserDetailsService.loadUserByUsername is called");
-
         User user = userService.getUserByUsername(username);
+
         if (user == null) {
             return null;
         }
 
+        List<GrantedAuthority> authorities = user.getPermissions().stream()
+                .map(permission -> new SimpleGrantedAuthority(permission.getName()))
+                .collect(Collectors.toList());
+
+        user.getRoles().forEach(role -> authorities.addAll(role.getPermissions().stream()
+                .map(permission -> new SimpleGrantedAuthority(permission.getName()))
+                .collect(Collectors.toList())));
+
         return new UserDetails() {
             @Override
             public Collection<? extends GrantedAuthority> getAuthorities() {
-                List<GrantedAuthority> authorities = user.getPermissions().stream()
-                        .map(permission -> new SimpleGrantedAuthority(permission.getName()))
-                        .collect(Collectors.toList());
-
-                user.getRoles().forEach(role -> authorities.addAll(role.getPermissions().stream()
-                        .map(permission -> new SimpleGrantedAuthority(permission.getName()))
-                        .collect(Collectors.toList())));
-
                 return authorities;
             }
 
