@@ -30,7 +30,7 @@ public class UserDetailsService implements org.springframework.security.core.use
         User user = userService.getUserByUsername(username);
 
         if (user == null) {
-            return null;
+            throw new UsernameNotFoundException("User with username '" + username +  "' was not found!");
         }
 
         List<GrantedAuthority> authorities = user.getPermissions().stream()

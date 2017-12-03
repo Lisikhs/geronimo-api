@@ -8,9 +8,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HomeController {
 
-    @PreAuthorize("permitAll")
     @GetMapping("/")
     public String index() {
         return "Hello world";
+    }
+
+    @PreAuthorize("hasRole('ADMIN_HOME')")
+    @GetMapping("/admin")
+    public String adminIndex() {
+        return "Restricted only for admins";
     }
 }
