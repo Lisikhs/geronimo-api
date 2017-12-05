@@ -13,7 +13,7 @@ public class HomeController {
         return "Hello world";
     }
 
-    @PreAuthorize("hasRole('ADMIN_HOME')")
+    @PreAuthorize("hasAuthority('ADMIN_HOME')")
     @GetMapping("/admin")
     public String adminIndex() {
         return "Restricted only for admins";
