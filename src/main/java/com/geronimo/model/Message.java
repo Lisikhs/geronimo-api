@@ -32,12 +32,6 @@ public class Message extends AuditedEntity {
     @NotNull
     private String text;
 
- /*   добавить этих пацанов?? пока что не буду, чтоб не лапать энтити
-
-    private Long countOfLikes;
-
-    private Long countOfReblogs;*/
-
     @ManyToMany
     @BatchSize(size = 20)
     private Set<User> likes = new HashSet<>();
@@ -75,9 +69,5 @@ public class Message extends AuditedEntity {
 
     public void removeAnswer(Message answer) {
         answers.remove(answer);
-    }
-
-    public void setAuthor(User author) {
-        this.author = author;
     }
 }
