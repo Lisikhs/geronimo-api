@@ -2,19 +2,25 @@ package com.geronimo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.secure.spi.GrantedPermission;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
 @Data
-@ToString(callSuper = true, exclude = {"messages", "followers"})
-@EqualsAndHashCode(callSuper = true, exclude = {"messages", "followers"})
+@ToString(callSuper = true, exclude = {"messages", "followers", "password", "roles", "permissions"})
+@EqualsAndHashCode(callSuper = true, exclude = {"messages", "followers", "roles", "permissions"})
 @Table(name = "users")
 @NoArgsConstructor
-@JsonIgnoreProperties(value = { "messages" })
+@JsonIgnoreProperties(value = { "messages", "followers", "password", "roles", "permissions" })
 public class User extends AuditedEntity {
 
     public User(String username, String password) {
@@ -27,6 +33,22 @@ public class User extends AuditedEntity {
 
     @NotNull
     private String password;
+
+    @ManyToMany
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "users_permissions", joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "permission_id"))
+    private Set<Permission> permissions;
+
+    private boolean accountNonExpired = true;
+    private boolean accountNonLocked = true;
+    private boolean credentialsNonExpired = true;
+    private boolean enabled = true;
+    private LocalDate passwordUpdated;
 
     @Embedded
     private Profile profile;
@@ -59,6 +81,4 @@ public class User extends AuditedEntity {
             followers.remove(toUnfollow);
         }
     }
-
-
 }

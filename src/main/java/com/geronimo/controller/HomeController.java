@@ -1,14 +1,22 @@
 package com.geronimo.controller;
 
-import org.springframework.stereotype.Controller;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+
+@RestController
 public class HomeController {
 
     @GetMapping("/")
     public String index() {
-        return "index";
+        return "Hello world";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN_HOME')")
+    @GetMapping("/admin")
+    public String adminIndex() {
+        return "Restricted only for admins";
     }
 
 }
