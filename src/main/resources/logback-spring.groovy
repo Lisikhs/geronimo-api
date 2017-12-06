@@ -32,4 +32,4 @@ appender("FILE", RollingFileAppender) {
     }
 }
 
-root(DEBUG, ["CONSOLE", "FILE"])
+root(INFO, ["CONSOLE", "FILE"])
