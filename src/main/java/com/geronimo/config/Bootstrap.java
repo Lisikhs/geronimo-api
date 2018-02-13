@@ -19,8 +19,8 @@ public class Bootstrap {
 
     private static Logger LOG = LoggerFactory.getLogger(Bootstrap.class);
 
-    private static final String ADMIN_ROLE_NAME = "ROLE_]ADMIN";
-    private static final String USER_ROLE_NAME = "ROLE_USER";
+    private static final String ADMIN_ROLE_NAME = "ADMIN";
+    private static final String USER_ROLE_NAME = "USER";
 
     @Autowired
     private IUserService userService;
