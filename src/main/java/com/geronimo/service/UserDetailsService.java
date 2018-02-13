@@ -20,7 +20,7 @@ public class UserDetailsService implements org.springframework.security.core.use
 
     @Transactional(readOnly = true)
     @Override
-    public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userService.getUserByUsername(username);
 
         if (user == null) {

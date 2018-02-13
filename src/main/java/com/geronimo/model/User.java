@@ -42,7 +42,7 @@ public class User extends AuditedEntity {
     private boolean accountNonLocked = true;
     private boolean credentialsNonExpired = true;
     private boolean enabled = true;
-    private LocalDate passwordUpdated;
+    private LocalDateTime lastPasswordReset;
 
     @Embedded
     private Profile profile;

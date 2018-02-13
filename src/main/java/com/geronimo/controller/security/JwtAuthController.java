@@ -1,8 +1,10 @@
 package com.geronimo.controller.security;
 
-import com.geronimo.config.security.jwt.JwtAuth;
-import com.geronimo.config.security.jwt.JwtToken;
+import com.geronimo.config.security.UserDetails;
 import com.geronimo.config.security.jwt.JwtTokenUtil;
+import com.geronimo.model.security.JwtAuth;
+import com.geronimo.model.security.JwtToken;
+import com.geronimo.service.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -60,10 +60,10 @@ public class JwtAuthController {
         String authToken = request.getHeader(tokenHeader);
         final String token = authToken.substring(7);
         String username = jwtTokenUtil.getUsernameFromToken(token);
+
         UserDetails user = userDetailsService.loadUserByUsername(username);
 
-        // TODO: last password reset, create a field for User
-        if (jwtTokenUtil.canTokenBeRefreshed(token, null)) {
+        if (jwtTokenUtil.canTokenBeRefreshed(token, user.getLastPasswordReset())) {
             String refreshedToken = jwtTokenUtil.refreshToken(token);
             return ResponseEntity.ok(new JwtToken(refreshedToken));
         } else {

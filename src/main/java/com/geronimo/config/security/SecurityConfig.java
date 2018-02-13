@@ -1,7 +1,7 @@
 package com.geronimo.config.security;
 
 import com.geronimo.config.security.jwt.JwtAuthEntryPoint;
-import com.geronimo.config.security.jwt.JwtAuthTokenFilter;
+import com.geronimo.config.security.jwt.filter.JwtAuthTokenFilter;
 import com.geronimo.service.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

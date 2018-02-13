@@ -1,4 +1,4 @@
-package com.geronimo.config.security.jwt;
+package com.geronimo.model.security;
 
 public class JwtToken {
     private final String token;
