@@ -1,6 +1,7 @@
 package com.geronimo.service;
 
 import com.geronimo.config.security.UserDetails;
+import com.geronimo.config.security.UserDetailsFactory;
 import com.geronimo.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class UserDetailsService implements org.springframework.security.core.use
         if (user == null) {
             throw new UsernameNotFoundException("User with username '" + username + "' was not found!");
         } else {
-            return UserDetails.fromUser(user);
+            return UserDetailsFactory.fromUser(user);
         }
     }
 }
