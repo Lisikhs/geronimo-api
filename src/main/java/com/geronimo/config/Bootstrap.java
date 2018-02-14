@@ -4,8 +4,7 @@ import com.geronimo.model.Role;
 import com.geronimo.model.User;
 import com.geronimo.service.IRoleService;
 import com.geronimo.service.IUserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -15,9 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 
 @Component
+@Slf4j
 public class Bootstrap {
-
-    private static Logger LOG = LoggerFactory.getLogger(Bootstrap.class);
 
     private static final String ADMIN_ROLE_NAME = "ADMIN";
     private static final String USER_ROLE_NAME = "USER";
@@ -57,7 +55,7 @@ public class Bootstrap {
     private void createRootUser() {
         User user = userService.getUserByUsername("root");
         if (user == null) {
-            LOG.info("Creating root user since it's not in the database yet");
+            log.info("Creating root user since it's not in the database yet");
             user = new User("root", passwordEncoder.encode("root"));
             user.getRoles().add(roleService.findRoleByName(ADMIN_ROLE_NAME));
 
