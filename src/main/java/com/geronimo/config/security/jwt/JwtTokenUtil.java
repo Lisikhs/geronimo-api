@@ -39,6 +39,9 @@ public class JwtTokenUtil implements Serializable {
     @Value("${jwt.expiration}")
     private Long expiration;
 
+    @Value("${jwt.scheme}")
+    private String scheme;
+
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
@@ -146,5 +149,13 @@ public class JwtTokenUtil implements Serializable {
         } else {
             return Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
         }
+    }
+
+    public Boolean isValidTokenHeader(String tokenHeader) {
+        return tokenHeader.startsWith(scheme);
+    }
+
+    public String extractTokenFromHeader(String tokenHeader) {
+        return tokenHeader.substring(scheme.length()).trim();
     }
 }

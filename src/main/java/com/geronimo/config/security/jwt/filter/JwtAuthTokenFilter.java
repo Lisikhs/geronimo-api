@@ -4,12 +4,14 @@ import com.geronimo.config.security.UserDetails;
 import com.geronimo.config.security.jwt.JwtTokenUtil;
 import com.geronimo.service.UserDetailsService;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -19,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
+@Component
 @Slf4j
 public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
@@ -29,22 +32,28 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
     private JwtTokenUtil tokenUtil;
 
     @Value("${jwt.header}")
-    private String tokenHeader;
+    private String tokenHeaderName;
+
+    @Value("${jwt.scheme}")
+    private String scheme;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        final String requestHeader = request.getHeader(this.tokenHeader);
+        final String tokenHeader = request.getHeader(this.tokenHeaderName);
 
         String username = null;
         String authToken = null;
-        if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
-            authToken = requestHeader.substring(7);
+        if (tokenHeader != null && tokenUtil.isValidTokenHeader(tokenHeader)) {
+            authToken = tokenUtil.extractTokenFromHeader(tokenHeader);
+
             try {
                 username = tokenUtil.getUsernameFromToken(authToken);
             } catch (IllegalArgumentException e) {
-                log.error("an error occured during getting username from token", e);
+                log.error("an error occurred during getting username from token", e);
             } catch (ExpiredJwtException e) {
                 log.warn("the token is expired and not valid anymore", e);
+            } catch (MalformedJwtException e) {
+                log.warn("user provided malformed jwt token");
             }
         } else {
             log.warn("couldn't find bearer string, will ignore the header");

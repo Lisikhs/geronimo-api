@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HomeController {
 
-    @GetMapping("/")
-    public String index() {
+    @GetMapping("/user")
+    public String userIndex() {
         return "Hello world";
     }
 

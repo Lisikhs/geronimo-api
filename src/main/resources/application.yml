@@ -30,6 +30,7 @@ logging:
 
 jwt:
   header: Authorization
+  scheme: Bearer
   secret: g3Rr0n1m0!
   expiration: 604800
   route:
