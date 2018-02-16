@@ -8,14 +8,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HomeController {
 
+    @GetMapping("/")
+    public String publicEndpoint() {
+        return "Public for all";
+    }
+
     @GetMapping("/user")
-    public String userIndex() {
-        return "Hello world";
+    public String securedEndpoint() {
+        return "Only for authorized users";
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/admin")
-    public String adminIndex() {
-        return "Restricted only for admins";
+    public String adminRoleSecuredEndpoint() {
+        return "Only for authorized admins";
     }
 }

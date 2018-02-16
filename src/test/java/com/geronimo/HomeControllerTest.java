@@ -1,42 +1,93 @@
 package com.geronimo;
 
-import com.geronimo.controller.HomeController;
+import com.geronimo.config.security.UserDetails;
+import com.geronimo.config.security.UserDetailsFactory;
+import com.geronimo.config.security.jwt.JwtTokenUtil;
+import com.geronimo.model.User;
+import com.geronimo.service.UserDetailsService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(HomeController.class)
-@ActiveProfiles("test")
-@WithMockUser(username = "root", roles = { "ADMIN_HOME" })
+@GeronimoSpringTest
 public class HomeControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
-    @Test
-    public void testAdminEndpoint() throws Exception {
-        mockMvc.perform(get("/admin").with(user("root")))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Restricted only for admins")));
+    @Autowired
+    private WebApplicationContext context;
+
+    @MockBean
+    private JwtTokenUtil tokenUtil;
+
+    @MockBean
+    private UserDetailsService userDetailsService;
+
+    @Before
+    public void setup() {
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(SecurityMockMvcConfigurers.springSecurity())
+                .build();
     }
 
     @Test
-    public void testHomeEndpoint() throws Exception {
-        mockMvc.perform(get("/").with(user("root")))
+    public void testGetSecuredEndpointWithUnauthorizedUser() throws Exception {
+        mockMvc.perform(get("/admin")).andExpect(status().isUnauthorized());
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void testEndpointWithAdminRoleRequiredSucceedsForUserWithAdminRole() throws Exception {
+        User user = new User();
+        user.setUsername("dummy");
+        user.setEnabled(Boolean.TRUE);
+
+        UserDetails jwtUser = UserDetailsFactory.fromUser(user);
+
+        when(tokenUtil.getUsernameFromToken(any())).thenReturn(user.getUsername());
+        when(userDetailsService.loadUserByUsername(eq(user.getUsername()))).thenReturn(jwtUser);
+
+        mockMvc.perform(get("/admin").header("Authorization", "Bearer dummy"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Hello world")));
+                .andExpect(content().string(containsString("Only for authorized admins")));
+    }
+
+    @Test
+    public void testSecuredEndpointSucceedsForAuthorizedUser() throws Exception {
+        mockMvc.perform(get("/user").with(user("root")))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Only for authorized users")));
+    }
+
+    @Test
+    public void testSecuredEndpointFailsWithPublicAccess() throws Exception {
+        mockMvc.perform(get("/user"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testUnsecuredEndpointSucceedsWithUnauthorizedAccess() throws Exception {
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Public for all")));
     }
 
 }
