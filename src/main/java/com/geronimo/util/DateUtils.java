@@ -6,6 +6,7 @@ import org.apache.commons.lang3.Validate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Date;
 
 public class DateUtils {
 
@@ -13,6 +14,10 @@ public class DateUtils {
 
     public static long getLocalDateTimeMillis(LocalDateTime localDateTime) {
         return getLocalDateTimeMillis(localDateTime, DEFAULT_ZONE);
+    }
+
+    public static Date convertToDate(LocalDateTime localDateTime) {
+        return new Date(getLocalDateTimeMillis(localDateTime));
     }
 
     public static long getLocalDateTimeMillis(LocalDateTime localDateTime, ZoneId zoneId) {

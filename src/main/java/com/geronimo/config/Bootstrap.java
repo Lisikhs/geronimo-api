@@ -1,13 +1,10 @@
 package com.geronimo.config;
 
-import com.geronimo.model.Permission;
 import com.geronimo.model.Role;
 import com.geronimo.model.User;
-import com.geronimo.service.IPermissionService;
 import com.geronimo.service.IRoleService;
 import com.geronimo.service.IUserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -17,15 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 
 @Component
+@Slf4j
 public class Bootstrap {
 
-    private static Logger LOG = LoggerFactory.getLogger(Bootstrap.class);
+    private static final String ADMIN_ROLE_NAME = "ADMIN";
+    private static final String USER_ROLE_NAME = "USER";
 
     @Autowired
     private IUserService userService;
-
-    @Autowired
-    private IPermissionService permissionService;
 
     @Autowired
     private IRoleService roleService;
@@ -42,32 +38,15 @@ public class Bootstrap {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     private void createRolesAndPermissions() {
-
-        Permission homePermission = permissionService.findPermissionByName("HOME");
-        if (homePermission == null) {
-            homePermission = new Permission("HOME");
-            permissionService.savePermission(homePermission);
-        }
-
-        Permission adminHomePermission = permissionService.findPermissionByName("ADMIN_HOME");
-        if (adminHomePermission == null) {
-            adminHomePermission = new Permission("ADMIN_HOME");
-            permissionService.savePermission(adminHomePermission);
-        }
-
-        Role adminRole = roleService.findRoleByName("ADMIN");
+        Role adminRole = roleService.findRoleByName(ADMIN_ROLE_NAME);
         if (adminRole == null) {
-            adminRole = new Role("ADMIN");
-            adminRole.getPermissions().add(adminHomePermission);
-
+            adminRole = new Role(ADMIN_ROLE_NAME);
             roleService.saveRole(adminRole);
         }
 
-        Role userRole = roleService.findRoleByName("USER");
+        Role userRole = roleService.findRoleByName(USER_ROLE_NAME);
         if (userRole == null) {
-            userRole = new Role("USER");
-            userRole.getPermissions().add(homePermission);
-
+            userRole = new Role(USER_ROLE_NAME);
             roleService.saveRole(userRole);
         }
     }
@@ -76,9 +55,9 @@ public class Bootstrap {
     private void createRootUser() {
         User user = userService.getUserByUsername("root");
         if (user == null) {
-            LOG.info("Creating root user since it's not in the database yet");
+            log.info("Creating root user since it's not in the database yet");
             user = new User("root", passwordEncoder.encode("root"));
-            user.getRoles().add(roleService.findRoleByName("ADMIN"));
+            user.getRoles().add(roleService.findRoleByName(ADMIN_ROLE_NAME));
 
             userService.saveOrUpdateUser(user);
         }
@@ -89,7 +68,7 @@ public class Bootstrap {
         User user = userService.getUserByUsername("john");
         if (user == null) {
             user = new User("john", passwordEncoder.encode("doe"));
-            user.getRoles().add(roleService.findRoleByName("USER"));
+            user.getRoles().add(roleService.findRoleByName(USER_ROLE_NAME));
 
             userService.saveOrUpdateUser(user);
         }
