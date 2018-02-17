@@ -30,10 +30,10 @@ public class MessageService implements IMessageService {
 
     @Transactional
     @Override
-    public Page<Message> listUserMessagesAndReblogs(User author, Pageable pageable) {
-        Validate.notNull(author);
+    public Page<Message> listUserMessagesAndReblogs(User user, Pageable pageable) {
+        Validate.notNull(user);
 
-        return messageRepository.findUserMessages(author, pageable);
+        return messageRepository.findUserMessages(user, pageable);
     }
 
 

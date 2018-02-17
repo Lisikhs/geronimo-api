@@ -58,7 +58,7 @@ public class MessageControllerTests {
         mockMvc.perform(get("/user/1/message/1").with(user("user"))
                 .header("Authorization", "Bearer fakeToken"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"id\":1,\"version\":null,\"dateCreated\":null,\"lastUpdated\":null,\"author\":{\"id\":1,\"version\":null,\"dateCreated\":null,\"lastUpdated\":null,\"username\":\"john\",\"accountNonExpired\":true,\"accountNonLocked\":true,\"credentialsNonExpired\":true,\"enabled\":true,\"lastPasswordReset\":null,\"profile\":null},\"text\":\"oh my god, look at her butt\",\"likes\":[],\"reblogs\":[],\"answers\":[]}"));
+                .andExpect(content().json(objectMapper.writeValueAsString(msg)));
 
         verify(messageService, times(1)).getMessageById(msg.getId());
     }
