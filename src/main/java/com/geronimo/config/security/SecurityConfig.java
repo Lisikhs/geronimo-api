@@ -3,7 +3,6 @@ package com.geronimo.config.security;
 import com.geronimo.config.security.jwt.JwtAuthEntryPoint;
 import com.geronimo.config.security.jwt.filter.JwtAuthTokenFilter;
 import com.geronimo.service.UserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,12 +21,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Autowired
-    private JwtAuthEntryPoint unathorizedEntryPoint;
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -38,13 +31,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new JwtAuthTokenFilter();
     }
 
+    @Bean
+    @Override
+    public UserDetailsService userDetailsService() {
+        return new UserDetailsService();
+    }
+
+    @Bean
+    public JwtAuthEntryPoint jwtAuthEntryPoint() {
+        return new JwtAuthEntryPoint();
+    }
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
                 // we don't need CSRF because our token is invulnerable
                 .csrf().disable()
 
-                .exceptionHandling().authenticationEntryPoint(unathorizedEntryPoint).and()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthEntryPoint()).and()
 
                 // don't create session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
@@ -78,6 +82,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
     }
 }

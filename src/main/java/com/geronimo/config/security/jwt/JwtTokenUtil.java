@@ -22,14 +22,14 @@ import java.util.function.Function;
 @Slf4j
 public class JwtTokenUtil implements Serializable {
 
-    static final String AUDIENCE_UNKNOWN = "unknown";
-    static final String AUDIENCE_WEB = "web";
-    static final String AUDIENCE_MOBILE = "mobile";
-    static final String AUDIENCE_TABLET = "tablet";
+    public static final String AUDIENCE_UNKNOWN = "unknown";
+    public static final String AUDIENCE_WEB = "web";
+    public static final String AUDIENCE_MOBILE = "mobile";
+    public static final String AUDIENCE_TABLET = "tablet";
 
-    static final String CLAIM_KEY_USERNAME = "sub";
-    static final String CLAIM_KEY_AUDIENCE = "aud";
-    static final String CLAIM_KEY_CREATED = "iat";
+    public static final String CLAIM_KEY_USERNAME = "sub";
+    public static final String CLAIM_KEY_AUDIENCE = "aud";
+    public static final String CLAIM_KEY_CREATED = "iat";
 
     private Clock clock = DefaultClock.INSTANCE;
 
