@@ -1,9 +1,8 @@
-package com.geronimo;
+package com.geronimo.service;
 
+import com.geronimo.GeronimoSpringTest;
 import com.geronimo.model.Message;
 import com.geronimo.model.User;
-import com.geronimo.service.IMessageService;
-import com.geronimo.service.IUserService;
 import com.geronimo.util.DateUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -27,8 +26,13 @@ import static org.junit.Assert.*;
 @GeronimoSpringTest
 public class MessageServiceTest {
 
+    @Autowired
     private IMessageService messageService;
+
+    @Autowired
     private IUserService userService;
+
+    @PersistenceContext
     private EntityManager entityManager;
 
     private User author;
@@ -232,20 +236,5 @@ public class MessageServiceTest {
         messageService.deleteMessage(answer.getId()); //besauce of cascading may not be deleted manually
         messageService.deleteMessage(originalMessage.getId());
         entityManager.flush();
-    }
-
-    @Autowired
-    public void setMessageService(IMessageService messageService) {
-        this.messageService = messageService;
-    }
-
-    @Autowired
-    public void setUserService(IUserService userService) {
-        this.userService = userService;
-    }
-
-    @PersistenceContext
-    public void setEntityManager(EntityManager entityManager) {
-        this.entityManager = entityManager;
     }
 }

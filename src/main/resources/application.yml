@@ -32,6 +32,16 @@ logging:
   path: @logging.path@
   config: classpath:logback-spring.groovy
 
+jwt:
+  header: Authorization
+  scheme: Bearer
+  secret: g3Rr0n1m0!
+  expiration: 604800
+  route:
+    auth:
+      path: auth
+      refresh: refresh
+
 ---
 
 spring:

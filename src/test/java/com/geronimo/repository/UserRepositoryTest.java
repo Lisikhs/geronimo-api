@@ -1,5 +1,6 @@
-package com.geronimo;
+package com.geronimo.repository;
 
+import com.geronimo.GeronimoSpringTest;
 import com.geronimo.dao.UserRepository;
 import com.geronimo.model.User;
 import org.junit.Test;
@@ -10,12 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 @RunWith(SpringRunner.class)

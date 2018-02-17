@@ -1,11 +1,9 @@
 package com.geronimo;
 
 
-import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
