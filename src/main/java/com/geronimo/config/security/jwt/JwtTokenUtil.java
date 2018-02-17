@@ -1,6 +1,7 @@
 package com.geronimo.config.security.jwt;
 
 import com.geronimo.config.security.UserDetails;
+import com.geronimo.util.DateUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Clock;
 import io.jsonwebtoken.Jwts;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +51,7 @@ public class JwtTokenUtil implements Serializable {
         return getClaimFromToken(token, Claims::getAudience);
     }
 
-    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+    private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
@@ -81,8 +81,6 @@ public class JwtTokenUtil implements Serializable {
         final Date createdDate = clock.now();
         final Date expirationDate = calculateExpirationDate(createdDate);
 
-        log.info("doGenerateToken " + createdDate);
-
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
@@ -100,7 +98,7 @@ public class JwtTokenUtil implements Serializable {
     }
 
     public Boolean canTokenBeRefreshed(String token, LocalDateTime lastPasswordReset) {
-        return canTokenBeRefreshed(token, convertToDate(lastPasswordReset));
+        return canTokenBeRefreshed(token, DateUtils.convertToDate(lastPasswordReset));
     }
 
     public String refreshToken(String token) {
@@ -123,19 +121,11 @@ public class JwtTokenUtil implements Serializable {
 
         return username.equals(userDetails.getUsername())
                 && !isTokenExpired(token)
-                && !isCreatedBeforeLastPasswordReset(created, convertToDate(userDetails.getLastPasswordReset()));
+                && !isCreatedBeforeLastPasswordReset(created, DateUtils.convertToDate(userDetails.getLastPasswordReset()));
     }
 
     private Date calculateExpirationDate(Date createdDate) {
         return new Date(createdDate.getTime() + expiration * 1000);
-    }
-
-    private Date convertToDate(LocalDateTime dateTime) {
-        if (dateTime == null) {
-            return null;
-        } else {
-            return Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
-        }
     }
 
     public Boolean isValidTokenHeader(String tokenHeader) {
