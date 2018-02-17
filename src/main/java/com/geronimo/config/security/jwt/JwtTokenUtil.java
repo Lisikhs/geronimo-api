@@ -22,14 +22,7 @@ import java.util.function.Function;
 @Slf4j
 public class JwtTokenUtil implements Serializable {
 
-    public static final String AUDIENCE_UNKNOWN = "unknown";
     public static final String AUDIENCE_WEB = "web";
-    public static final String AUDIENCE_MOBILE = "mobile";
-    public static final String AUDIENCE_TABLET = "tablet";
-
-    public static final String CLAIM_KEY_USERNAME = "sub";
-    public static final String CLAIM_KEY_AUDIENCE = "aud";
-    public static final String CLAIM_KEY_CREATED = "iat";
 
     private Clock clock = DefaultClock.INSTANCE;
 
@@ -103,16 +96,11 @@ public class JwtTokenUtil implements Serializable {
     public Boolean canTokenBeRefreshed(String token, Date lastPasswordReset) {
         final Date created = getIssuedAtDateFromToken(token);
         return !isCreatedBeforeLastPasswordReset(created, lastPasswordReset)
-                && (!isTokenExpired(token) || ignoreTokenExpiration(token));
+                && !isTokenExpired(token);
     }
 
     public Boolean canTokenBeRefreshed(String token, LocalDateTime lastPasswordReset) {
         return canTokenBeRefreshed(token, convertToDate(lastPasswordReset));
-    }
-
-    private Boolean ignoreTokenExpiration(String token) {
-        String audience = getAudienceFromToken(token);
-        return (AUDIENCE_TABLET.equals(audience) || AUDIENCE_MOBILE.equals(audience));
     }
 
     public String refreshToken(String token) {
@@ -132,10 +120,9 @@ public class JwtTokenUtil implements Serializable {
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
         final Date created = getIssuedAtDateFromToken(token);
-        //final Date expiration = getExpirationDateFromToken(token);
 
         return username.equals(userDetails.getUsername())
-                        && !isTokenExpired(token)
+                && !isTokenExpired(token)
                 && !isCreatedBeforeLastPasswordReset(created, convertToDate(userDetails.getLastPasswordReset()));
     }
 
