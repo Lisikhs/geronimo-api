@@ -9,7 +9,7 @@ public interface IMessageService {
 
     Page<Message> listFeedMessages(User user, Pageable pageable);
 
-    Page<Message> listUserMessagesAndReblogs(User author, Pageable pageable);
+    Page<Message> listUserMessagesAndReblogs(User user, Pageable pageable);
 
     void saveOrUpdateMessage(Message message);
 
