@@ -1,5 +1,6 @@
 package com.geronimo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
@@ -64,9 +65,9 @@ public class User extends AuditedEntity {
         }
     }
 
-    public void addFollower(User toFollow) {
-        if (toFollow != null) {
-            followers.add(toFollow);
+    public void addFollower(User follower) {
+        if (follower != null) {
+            followers.add(follower);
         }
     }
 
@@ -75,5 +76,4 @@ public class User extends AuditedEntity {
             followers.remove(toUnfollow);
         }
     }
-
 }

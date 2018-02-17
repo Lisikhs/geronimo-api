@@ -23,4 +23,5 @@ public class HomeController {
     public String adminRoleSecuredEndpoint() {
         return "Only for authorized admins";
     }
+
 }

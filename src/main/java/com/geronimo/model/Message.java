@@ -1,5 +1,6 @@
 package com.geronimo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
 
@@ -16,6 +17,7 @@ import java.util.Set;
 @Table(name = "messages")
 @ToString(exclude = {"author", "reblogs"}, callSuper = true)
 @NoArgsConstructor
+@JsonIgnoreProperties(value = { "answers" })
 public class Message extends AuditedEntity {
 
     public Message(String text, User author) {
@@ -67,9 +69,5 @@ public class Message extends AuditedEntity {
 
     public void removeAnswer(Message answer) {
         answers.remove(answer);
-    }
-
-    public void setAuthor(User author) {
-        this.author = author;
     }
 }
