@@ -1,5 +1,6 @@
-package com.geronimo;
+package com.geronimo.controller;
 
+import com.geronimo.GeronimoSpringTest;
 import com.geronimo.config.security.UserDetails;
 import com.geronimo.config.security.UserDetailsFactory;
 import com.geronimo.config.security.jwt.JwtTokenUtil;

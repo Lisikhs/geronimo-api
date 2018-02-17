@@ -1,15 +1,16 @@
-package com.geronimo;
+package com.geronimo.config.security;
 
-import com.geronimo.config.security.UserDetails;
 import com.geronimo.config.security.jwt.JwtTokenUtil;
 import io.jsonwebtoken.Clock;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.assertj.core.util.DateUtil;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ import static org.assertj.core.api.Assertions.within;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@RunWith(SpringRunner.class)
 public class JwtTokenUtilTest {
 
     private static final String TEST_USERNAME = "testUser";
