@@ -25,7 +25,6 @@ install: true
 script:
   - docker-compose -f docker-compose-travis.yml build
   - docker-compose -f docker-compose-travis.yml up --timeout 1 --no-build -d
-  - docker-compose -f docker-compose-travis.yml run webapp mvn clean flyway:migrate test -Pdocker
-  - docker-compose -f docker-compose-travis.yml run webapp mvn clean install -DskipTests=true
+  - docker-compose -f docker-compose-travis.yml run webapp ./mvnw clean flyway:migrate package -Pdocker
   - docker-compose -f docker-compose-travis.yml stop
 
