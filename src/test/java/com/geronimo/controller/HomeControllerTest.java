@@ -1,6 +1,7 @@
 package com.geronimo.controller;
 
 import com.geronimo.GeronimoSpringTest;
+import com.geronimo.TestUtil;
 import com.geronimo.config.security.UserDetails;
 import com.geronimo.config.security.UserDetailsFactory;
 import com.geronimo.config.security.jwt.JwtTokenUtil;
@@ -12,10 +13,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -43,10 +42,7 @@ public class HomeControllerTest {
 
     @Before
     public void setup() {
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(context)
-                .apply(SecurityMockMvcConfigurers.springSecurity())
-                .build();
+        mockMvc = TestUtil.mockMvcWithSecurity(context);
     }
 
     @Test

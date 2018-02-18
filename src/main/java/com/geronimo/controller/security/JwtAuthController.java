@@ -13,9 +13,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +38,7 @@ public class JwtAuthController {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    @RequestMapping(value = "${jwt.route.auth.path}", method = RequestMethod.POST)
+    @PostMapping(value = "${jwt.route.auth.path}")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuth auth) throws AuthenticationException {
 
         // Perform the security
@@ -58,7 +58,7 @@ public class JwtAuthController {
         return ResponseEntity.ok(new JwtToken(token));
     }
 
-    @RequestMapping(value = "${jwt.route.auth.refresh}", method = RequestMethod.GET)
+    @GetMapping(value = "${jwt.route.auth.refresh}")
     public ResponseEntity<?> refreshAndGetAuthenticationToken(HttpServletRequest request) {
         String tokenHeader = request.getHeader(tokenHeaderName);
 
