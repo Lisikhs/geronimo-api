@@ -40,7 +40,7 @@ jwt:
   route:
     auth:
       path: auth
-      refresh: refresh
+      refresh: auth/refresh
 
 ---
 
