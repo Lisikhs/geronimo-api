@@ -1,18 +1,19 @@
 package com.geronimo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.secure.spi.GrantedPermission;
-import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -33,6 +34,14 @@ public class User extends AuditedEntity {
 
     @NotNull
     private String password;
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     @ManyToMany
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"),
@@ -59,8 +68,8 @@ public class User extends AuditedEntity {
 
     @ManyToMany
     @JoinTable(name = "followers_following",
-            joinColumns = {@JoinColumn(name = "follower_id")},
-            inverseJoinColumns = {@JoinColumn(name = "following_id")})
+            joinColumns = {@JoinColumn(name = "following_id")},
+            inverseJoinColumns = {@JoinColumn(name = "follower_id")})
     @BatchSize(size = 20)
     private Set<User> followers = new HashSet<>();
 

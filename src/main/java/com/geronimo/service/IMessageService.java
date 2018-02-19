@@ -11,15 +11,23 @@ public interface IMessageService {
 
     Page<Message> listUserMessagesAndReblogs(User author, Pageable pageable);
 
-    void saveOrUpdateMessage(Message message);
+    Message saveOrUpdateMessage(Message message);
 
-    void postMessage(Message message);
+    Message postMessage(Message message);
 
-    void reblogMessage(Message messageToReblog, User whoReblogged);
+    Message reblogMessage(Message messageToReblog, User whoReblogged);
 
-    void likeMessage(Message message, User whoLiked);
+    Message removeReblog(Message message, User user);
+
+    Message likeMessage(Message message, User whoLiked);
+
+    Message dislikeMessage(Message message, User whoDisliked);
+
+    Boolean isMessageLiked(Message message, User whoLiked);
 
     Long countLikes(Message message);
+
+    Boolean isMessageReblogged(Message message, User whoReblogged);
 
     Long countReblogs(Message message);
 

@@ -37,8 +37,8 @@ public class Message extends AuditedEntity {
     private Set<User> likes = new HashSet<>();
 
     @ManyToMany
-    @JoinTable(joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "message_id"))
+    @JoinTable(joinColumns = @JoinColumn(name = "message_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     @BatchSize(size = 20)
     private Set<User> reblogs = new HashSet<>();
 
@@ -47,27 +47,23 @@ public class Message extends AuditedEntity {
     @BatchSize(size = 20)
     private List<Message> answers = new LinkedList<>();
 
-    public void addLike(User whoLiked) {
-        likes.add(whoLiked);
+    public void addLike(User user) {
+        likes.add(user);
     }
 
-    public void removeLike(User whoLiked) {
-        likes.remove(whoLiked);
+    public void removeLike(User user) {
+        likes.remove(user);
     }
 
-    public void addReblog(User whoReblogged) {
-        reblogs.add(whoReblogged);
+    public void addReblog(User user) {
+        reblogs.add(user);
     }
 
-    public void removeReblog(User whoReblogged) {
-        reblogs.remove(whoReblogged);
+    public void removeReblog(User user) {
+        reblogs.remove(user);
     }
 
     public void addAnswer(Message answer) {
         answers.add(answer);
-    }
-
-    public void removeAnswer(Message answer) {
-        answers.remove(answer);
     }
 }

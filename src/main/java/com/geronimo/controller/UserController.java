@@ -1,85 +1,106 @@
 package com.geronimo.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.geronimo.JsonReader;
 import com.geronimo.model.Message;
 import com.geronimo.model.User;
-import com.geronimo.service.FakeService;
+import com.geronimo.service.MessageService;
+import com.geronimo.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
-
-    private final FakeService fakeService;
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private final UserService userService;
+    private final MessageService messageService;
 
     @Autowired
-    UserController(FakeService fakeService) {
-        this.fakeService = fakeService;
-    }
-
-    @GetMapping
-    public List<User> getUsers() {
-        return FakeService.getUsers();
+    UserController(UserService userService, MessageService messageService) {
+        this.userService = userService;
+        this.messageService = messageService;
     }
 
     @GetMapping(value = "/{id}")
     public User getUser(@PathVariable("id") Long id) {
-        return fakeService.getUserById(id);
+        return userService.getUserById(id);
     }
 
     @GetMapping(value = "/{id}/feed")
-    public List<Message> getFeed(@PathVariable("id") Long id) {
-        return fakeService.getFeedByUserId(id);
-    }
+    public Message[] getFeed(@PathVariable("id") Long id) {
+        User user = userService.getUserById(id);
 
-    @PostMapping
-    public Boolean saveUser(@RequestBody User user) {
-        return fakeService.saveUser(user);
-    }
+        List<Message> userMessages = messageService.listUserMessagesAndReblogs(user, new PageRequest(0, 10)).getContent();
+        List<Message> content = messageService.listFeedMessages(user, new PageRequest(0, 10)).getContent();
 
-    @PostMapping(value = "/validate")
-    public User validateUser(@RequestBody User user) {
-        return fakeService.validateUser(user);
+        List<Message> feed = new ArrayList<>(userMessages);
+        feed.addAll(content);
+        return feed.toArray(new Message[feed.size()]);
     }
 
     @PutMapping
-    public User updateUser(@RequestBody User user) {
-        return fakeService.updateUser(user);
+    public User updateUser(@RequestBody String data) {
+        try {
+            User updated = new JsonReader(data).readObject(User.class);
+
+            User user = userService.getUserById(updated.getId());
+            user.setUsername(updated.getUsername());
+            user.setProfile(updated.getProfile());
+            return userService.saveOrUpdateUser(user);
+        } catch (IOException e) {
+            logger.error("Failed to read JSON data", e);
+        }
+
+        throw new IllegalStateException("Failed to update user");
     }
 
     @DeleteMapping(value = "/{id}")
-    public boolean deleteUser(@PathVariable Long id) {
-        return fakeService.deleteUserById(id);
+    public void deleteUser(@PathVariable Long id) {
+        userService.deleteUser(userService.getUserById(id));
     }
 
     @GetMapping(value = "/{id}/messages")
-    public List<Message> getMessagesOfUser(@PathVariable("id") Long id) {
-        return fakeService.getMessagesByUserId(id);
+    public Message[] getMessagesOfUser(@PathVariable("id") Long id) {
+        List<Message> content = messageService.listUserMessagesAndReblogs(userService.getUserById(id),
+                new PageRequest(0, 10)).getContent();
+        return content.toArray(new Message[content.size()]);
     }
 
-    @GetMapping(value = "/is/{idOfSessionUser}/subscribedTo/{idOfUser}")
-    public Boolean isSubscribedTo(@PathVariable("idOfSessionUser") Long idOfSessionUser,
-                                        @PathVariable("idOfUser") Long idOfUser) {
-        return fakeService.isSubscribedTo(idOfSessionUser, idOfUser);
+    @GetMapping(value = "/{firstId}/subscribedTo/{secondId}")
+    public String isSubscribedTo(@PathVariable("firstId") Long firstUserId, @PathVariable("secondId") Long secondUserId) {
+        Boolean isSubscribed = userService.isSubscribedToUser(firstUserId, secondUserId);
+        return new ObjectMapper().createObjectNode().put("isSubscribed", isSubscribed).toString();
     }
 
-    @GetMapping(value = "/{idOfSessionUser}/subscribeTo/{idOfUser}")
-    public void subscribeTo(@PathVariable("idOfSessionUser") Long idOfSessionUser,
-                                  @PathVariable("idOfUser") Long idOfUser) {
-        fakeService.subscribeTo(idOfSessionUser, idOfUser);
+    @GetMapping(value = "/{firstId}/subscribeTo/{secondId}")
+    public void subscribeTo(@PathVariable("firstId") Long firstId,
+                            @PathVariable("secondId") Long secondId) {
+        userService.followUser(firstId, secondId);
     }
 
-    @GetMapping(value = "/{idOfSessionUser}/unsubscribeFrom/{idOfUser}")
-    public void unsubscribeFrom(@PathVariable("idOfSessionUser") Long idOfSessionUser,
-                                  @PathVariable("idOfUser") Long idOfUser) {
-        fakeService.unsubscribeFrom(idOfSessionUser, idOfUser);
+    @GetMapping(value = "/{firstId}/unsubscribeFrom/{secondId}")
+    public void unsubscribeFrom(@PathVariable("firstId") Long firstId,
+                                  @PathVariable("secondId") Long secondId) {
+        userService.unfollowUser(firstId, secondId);
     }
 
-    @GetMapping(value = "/getUserInfo/{idOfUser}")
-    public int[] getUserInfo(@PathVariable("idOfUser") Long idOfUser) {
-        return fakeService.getUserInfo(idOfUser);
+    @GetMapping(value = "/{id}/details")
+    public String getUserInfo(@PathVariable("id") Long id) {
+        return new ObjectMapper().createObjectNode()
+                .put("countOfMessages", userService.getMessageCountOfUser(id))
+                .put("countOfFollowed", userService.getCountOfFollowedUsers(id))
+                .put("countOfFollowers", userService.getCountOfFollowingUsers(id))
+                .toString();
+
     }
 
 }

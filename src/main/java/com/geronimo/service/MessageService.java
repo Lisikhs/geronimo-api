@@ -5,7 +5,6 @@ import com.geronimo.exception.RebloggingOwnMessageException;
 import com.geronimo.model.Message;
 import com.geronimo.model.User;
 import org.apache.commons.lang3.Validate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,12 +18,34 @@ public class MessageService implements IMessageService {
     private MessageRepository messageRepository;
     private IUserService userService;
 
+    public MessageService(MessageRepository messageRepository, IUserService userService) {
+        this.messageRepository = messageRepository;
+        this.userService = userService;
+    }
+
+
+    @Transactional
+    @Override
+    public Message saveOrUpdateMessage(Message message) {
+        Validate.notNull(message);
+
+        return messageRepository.save(message);
+    }
+
+    @Transactional
+    @Override
+    public Message postMessage(Message message) {
+        Validate.notNull(message);
+        Validate.notNull(message.getAuthor());
+
+        return saveOrUpdateMessage(message);
+    }
+
     @Transactional
     @Override
     public Page<Message> listFeedMessages(User currentUser, Pageable pageable) {
         return messageRepository.findByAuthorIn(userService.getFollowingUsers(currentUser.getId()), pageable);
     }
-
 
     @Transactional
     @Override
@@ -32,18 +53,44 @@ public class MessageService implements IMessageService {
         return messageRepository.findUserMessages(author, pageable);
     }
 
+    @Transactional
+    @Override
+    public Message likeMessage(Message message, User whoLiked) {
+        Validate.notNull(message);
+        Validate.notNull(whoLiked);
+
+        message.addLike(whoLiked);
+        return saveOrUpdateMessage(message);
+    }
+
+    @Override
+    public Boolean isMessageLiked(Message message, User whoLiked) {
+        Validate.notNull(message);
+        Validate.notNull(whoLiked);
+
+        return messageRepository.isMessageLiked(message.getId(), whoLiked);
+    }
+
+    @Override
+    public Long countLikes(Message message) {
+        Validate.notNull(message);
+
+        return messageRepository.countLikes(message.getId());
+    }
 
     @Override
     @Transactional
-    public void saveOrUpdateMessage(Message message) {
+    public Message dislikeMessage(Message message, User whoDisliked) {
         Validate.notNull(message);
+        Validate.notNull(whoDisliked);
 
-        messageRepository.save(message);
+        message.removeLike(whoDisliked);
+        return saveOrUpdateMessage(message);
     }
 
     @Transactional
     @Override
-    public void reblogMessage(Message messageToReblog, User whoReblogged) {
+    public Message reblogMessage(Message messageToReblog, User whoReblogged) {
         Validate.notNull(messageToReblog);
         Validate.notNull(whoReblogged);
 
@@ -53,39 +100,25 @@ public class MessageService implements IMessageService {
         }
 
         messageToReblog.addReblog(whoReblogged);
-        saveOrUpdateMessage(messageToReblog);
+        return saveOrUpdateMessage(messageToReblog);
     }
 
     @Transactional
     @Override
-    public void postMessage(Message message) {
+    public Message removeReblog(Message message, User user) {
         Validate.notNull(message);
-        Validate.notNull(message.getAuthor(), "Author should not be null!");
+        Validate.notNull(user);
 
-        User author = message.getAuthor();
-
-        if (!author.getMessages().contains(message)) {
-            author.addMessage(message);
-        }
-
-        saveOrUpdateMessage(message);
-    }
-
-    @Transactional
-    @Override
-    public void likeMessage(Message message, User whoLiked) {
-        Validate.notNull(message);
-        Validate.notNull(whoLiked);
-
-        message.addLike(whoLiked);
-        saveOrUpdateMessage(message);
+        message.removeReblog(user);
+        return saveOrUpdateMessage(message);
     }
 
     @Override
-    public Long countLikes(Message message) {
+    public Boolean isMessageReblogged(Message message, User whoReblogged) {
         Validate.notNull(message);
+        Validate.notNull(whoReblogged);
 
-        return messageRepository.countLikes(message.getId());
+        return messageRepository.isMessageReblogged(message.getId(), whoReblogged);
     }
 
     @Override
@@ -128,15 +161,5 @@ public class MessageService implements IMessageService {
         Validate.notNull(message);
 
         messageRepository.delete(message);
-    }
-
-    @Autowired
-    public void setMessageRepository(MessageRepository messageRepository) {
-        this.messageRepository = messageRepository;
-    }
-
-    @Autowired
-    public void setUserService(IUserService userService) {
-        this.userService = userService;
     }
 }

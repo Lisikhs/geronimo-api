@@ -13,10 +13,10 @@ import java.util.List;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
 
-    @Query("select count(l) from Message m join m.likes as l where m.id=:messageId")
+    @Query("select m.likes.size from Message m where m.id=:messageId")
     Long countLikes(@Param("messageId") Long messageId);
 
-    @Query("select count(r) from Message m join m.reblogs r where m.id=:messageId")
+    @Query("select m.reblogs.size from Message m where m.id=:messageId")
     Long countReblogs(@Param("messageId") Long messageId);
 
     // TODO: change this query as it might hit limit of SQL's IN function on following users
@@ -24,4 +24,10 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
     @Query("select m from Message m where m.author = :user or :user member of m.reblogs")
     Page<Message> findUserMessages(@Param("user") User author, Pageable pageable);
+
+    @Query("SELECT (COUNT(m) = 1) FROM Message m WHERE m.id = :messageId AND :user member of m.likes")
+    Boolean isMessageLiked(@Param("messageId") Long messageId, @Param("user") User user);
+
+    @Query("SELECT (COUNT(m) = 1) FROM Message m WHERE m.id = :messageId AND :user member of m.reblogs")
+    Boolean isMessageReblogged(@Param("messageId") Long messageId, @Param("user") User whoReblogged);
 }

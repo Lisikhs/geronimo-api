@@ -27,7 +27,7 @@
         <db.driver>com.mysql.jdbc.Driver</db.driver>
         <db.url>jdbc:mysql://localhost:3306/geronimo?useUnicode=yes&amp;characterEncoding=UTF-8</db.url>
         <db.username>root</db.username>
-        <db.password>5472</db.password>
+        <db.password>root</db.password>
         <spring.profiles.active>default</spring.profiles.active>
 
         <logging.file>${project.name}</logging.file>
@@ -47,10 +47,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
+        <!--No requests are passing with this dependency when there's no configuration-->
+        <!--<dependency>-->
+            <!--<groupId>org.springframework.boot</groupId>-->
+            <!--<artifactId>spring-boot-starter-security</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -78,6 +79,11 @@
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
 
         <dependency>
@@ -177,7 +183,7 @@
             <properties>
                 <db.url>jdbc:mysql://localhost:3306/geronimo_test?useUnicode=yes&amp;characterEncoding=UTF-8</db.url>
                 <db.username>root</db.username>
-                <db.password>5472</db.password>
+                <db.password>root</db.password>
 
                 <spring.profiles.active>test</spring.profiles.active>
             </properties>
