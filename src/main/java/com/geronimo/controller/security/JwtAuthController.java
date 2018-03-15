@@ -55,7 +55,7 @@ public class JwtAuthController {
         final String token = jwtTokenUtil.generateToken(userDetails);
 
         // Return the token
-        return ResponseEntity.ok(new JwtToken(token));
+        return ResponseEntity.ok(new JwtToken(scheme + " " + token));
     }
 
     @GetMapping(value = "${jwt.route.auth.refresh}")
