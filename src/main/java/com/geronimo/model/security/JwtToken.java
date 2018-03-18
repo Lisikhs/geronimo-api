@@ -10,4 +10,5 @@ import lombok.EqualsAndHashCode;
 @AllArgsConstructor
 public class JwtToken {
     private final String token;
+    private final String expiresAt;
 }
