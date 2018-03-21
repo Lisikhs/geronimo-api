@@ -13,10 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -55,7 +52,7 @@ public class JwtAuthController {
         final String token = jwtTokenUtil.generateToken(userDetails);
 
         // Return the token
-        return ResponseEntity.ok(new JwtToken(scheme + " " + token));
+        return ResponseEntity.ok(new JwtToken(token));
     }
 
     @GetMapping(value = "${jwt.route.auth.refresh}")
@@ -74,5 +71,4 @@ public class JwtAuthController {
             return ResponseEntity.badRequest().body(null);
         }
     }
-
 }
