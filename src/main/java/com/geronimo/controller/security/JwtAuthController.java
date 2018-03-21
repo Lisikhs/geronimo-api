@@ -27,9 +27,6 @@ public class JwtAuthController {
     @Value("${jwt.header}")
     private String tokenHeaderName;
 
-    @Value("${jwt.scheme}")
-    private String scheme;
-
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -77,5 +74,4 @@ public class JwtAuthController {
             return ResponseEntity.badRequest().body(null);
         }
     }
-
 }
