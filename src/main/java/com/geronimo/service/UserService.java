@@ -1,10 +1,13 @@
 package com.geronimo.service;
 
+import com.geronimo.config.security.UserDetails;
 import com.geronimo.dao.UserRepository;
 import com.geronimo.exception.SelfFollowingException;
 import com.geronimo.model.User;
 import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,30 +50,29 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User getUserByUsername(String username) {
+    public User getByUsername(String username) {
         Validate.notNull(username);
 
         return userRepository.findByUsername(username);
     }
 
     @Override
-    public User getUserById(Long id) {
+    public User getById(Long id) {
         Validate.notNull(id);
 
         return userRepository.findOne(id);
     }
 
-    @Transactional
     @Override
-    public void deleteUser(User user) {
-        Validate.notNull(user);
-
-        userRepository.delete(user);
+    public User getCurrent() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails principal = (UserDetails) authentication.getPrincipal();
+        return getByUsername(principal.getUsername());
     }
 
     @Transactional
     @Override
-    public void deleteUserById(Long id) {
+    public void deleteById(Long id) {
         Validate.notNull(id);
 
         userRepository.delete(id);
@@ -78,7 +80,7 @@ public class UserService implements IUserService {
 
     @Transactional
     @Override
-    public void deleteUserByUsername(String username) {
+    public void deleteByUsername(String username) {
         Validate.notNull(username);
 
         userRepository.deleteByUsername(username);

@@ -17,8 +17,8 @@ import javax.annotation.PostConstruct;
 @Slf4j
 public class Bootstrap {
 
-    private static final String ADMIN_ROLE_NAME = "ADMIN";
-    private static final String USER_ROLE_NAME = "USER";
+    private static final String ADMIN_ROLE_NAME = "ROLE_ADMIN";
+    private static final String USER_ROLE_NAME = "ROLE_USER";
 
     @Autowired
     private IUserService userService;
@@ -53,7 +53,7 @@ public class Bootstrap {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     private void createRootUser() {
-        User user = userService.getUserByUsername("root");
+        User user = userService.getByUsername("root");
         if (user == null) {
             log.info("Creating root user since it's not in the database yet");
             user = new User("root", passwordEncoder.encode("root"));
@@ -65,7 +65,7 @@ public class Bootstrap {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     private void createJohnDoeUser() {
-        User user = userService.getUserByUsername("john");
+        User user = userService.getByUsername("john");
         if (user == null) {
             user = new User("john", passwordEncoder.encode("doe"));
             user.getRoles().add(roleService.findRoleByName(USER_ROLE_NAME));

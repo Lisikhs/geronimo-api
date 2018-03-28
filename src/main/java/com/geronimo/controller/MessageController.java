@@ -27,7 +27,7 @@ public class MessageController {
 
     @PostMapping
     public ResponseEntity postMessage(@PathVariable("userId") Long userId, @RequestBody Message message) {
-        User author = userService.getUserById(userId);
+        User author = userService.getById(userId);
         message.setAuthor(author);
 
         messageService.postMessage(message);
@@ -49,7 +49,7 @@ public class MessageController {
     @GetMapping
     public ResponseEntity<Page<Message>> getMessages(@PathVariable("userId") Long userId,
                                                      @RequestParam("feed") Boolean feed, Pageable pageable) {
-        User author = userService.getUserById(userId);
+        User author = userService.getById(userId);
 
         Page<Message> messages;
         if (feed) {

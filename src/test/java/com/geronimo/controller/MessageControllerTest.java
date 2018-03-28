@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @GeronimoSpringTest
-public class MessageControllerTests {
+public class MessageControllerTest {
 
     @Autowired
     private WebApplicationContext context;
