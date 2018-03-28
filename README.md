@@ -24,3 +24,6 @@ To run tests please use the following command: \
 
 This command will implicitly run a command flyway:migrate with profile 'test', 
 so that the test database will be migrated before tests are run
+
+## Postman collection url
+    https://www.getpostman.com/collections/4cb15501d80599a5270b
