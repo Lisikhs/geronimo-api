@@ -27,7 +27,7 @@
         <db.driver>com.mysql.jdbc.Driver</db.driver>
         <db.url>jdbc:mysql://localhost:3306/geronimo?useUnicode=yes&amp;characterEncoding=UTF-8</db.url>
         <db.username>root</db.username>
-        <db.password>5472</db.password>
+        <db.password>root</db.password>
         <spring.profiles.active>default</spring.profiles.active>
 
         <logging.file>${project.name}</logging.file>
