@@ -32,9 +32,6 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
     @Value("${jwt.header}")
     private String tokenHeaderName;
 
-    @Value("${jwt.scheme}")
-    private String scheme;
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         final String tokenHeader = request.getHeader(this.tokenHeaderName);

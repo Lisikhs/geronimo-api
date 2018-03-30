@@ -19,15 +19,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 @RestController
 public class JwtAuthController {
 
     @Value("${jwt.header}")
     private String tokenHeaderName;
-
-    @Value("${jwt.scheme}")
-    private String scheme;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -53,9 +51,10 @@ public class JwtAuthController {
         // Reload password post-security so we can generate token
         final UserDetails userDetails = userDetailsService.loadUserByUsername(auth.getUsername());
         final String token = jwtTokenUtil.generateToken(userDetails);
+        final Date expiresAt = jwtTokenUtil.getExpirationDateFromToken(token);
 
         // Return the token
-        return ResponseEntity.ok(new JwtToken(token));
+        return ResponseEntity.ok(new JwtToken(token, String.valueOf(expiresAt.getTime())));
     }
 
     @GetMapping(value = "${jwt.route.auth.refresh}")
@@ -69,10 +68,10 @@ public class JwtAuthController {
 
         if (jwtTokenUtil.canTokenBeRefreshed(token, user.getLastPasswordReset())) {
             String refreshedToken = jwtTokenUtil.refreshToken(token);
-            return ResponseEntity.ok(new JwtToken(refreshedToken));
+            Date expiresAt = jwtTokenUtil.getExpirationDateFromToken(refreshedToken);
+            return ResponseEntity.ok(new JwtToken(refreshedToken, String.valueOf(expiresAt.getTime())));
         } else {
             return ResponseEntity.badRequest().body(null);
         }
     }
-
 }
