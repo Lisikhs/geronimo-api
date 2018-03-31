@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -41,20 +42,12 @@ public class MessageServiceTest {
     @Transactional
     @Before
     public void before() {
-        userService.deleteUserByUsername("nice_user");
-        userService.deleteUserByUsername("not_nice_user");
+        userService.deleteByUsername("nice_user");
+        userService.deleteByUsername("not_nice_user");
         entityManager.flush();
 
         author = userService.saveOrUpdateUser(new User("nice_user", "nice_password"));
         otherUser = userService.saveOrUpdateUser(new User("not_nice_user", "neither_nice_password"));
-    }
-
-    @Transactional
-    @After
-    public void after() {
-        userService.deleteUserById(otherUser.getId());
-        userService.deleteUserById(author.getId());
-        entityManager.flush();
     }
 
     @Test
@@ -74,17 +67,11 @@ public class MessageServiceTest {
 
         Page<Message> messages = messageService.listFeedMessages(otherUser,
                 new PageRequest(0, 10,
-                new Sort(new Sort.Order(Sort.Direction.DESC, "dateCreated"))));
+                null));
 
         assertEquals(messages.getTotalPages(), 1);
         assertEquals(messages.getTotalElements(), 2L);
-
-        List<Message> messagesFeed = messages.getContent();
-
-        long dateCreated1Millis = DateUtils.getLocalDateTimeMillis(messagesFeed.get(0).getDateCreated());
-        long dateCreated2Millis = DateUtils.getLocalDateTimeMillis(messagesFeed.get(1).getDateCreated());
-
-        assertTrue(dateCreated1Millis >= dateCreated2Millis);
+        assertTrue(messages.getContent().containsAll(Arrays.asList(message1, message2)));
     }
 
 
@@ -120,11 +107,6 @@ public class MessageServiceTest {
         assertTrue(messagesFeed.contains(message2));
         assertTrue(messagesFeed.contains(message3));
         assertTrue(messagesFeed.contains(message4));
-
-        assertTrue(messagesFeed.get(0).equals(message4));
-        assertTrue(messagesFeed.get(1).equals(message3));
-        assertTrue(messagesFeed.get(2).equals(message2));
-        assertTrue(messagesFeed.get(3).equals(message1));
     }
 
     @Test
